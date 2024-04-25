@@ -1,0 +1,9 @@
+# training
+ipykernel
+matplotlib
+nltk
+tqdm
+
+# model
+torch
+tiktoken
