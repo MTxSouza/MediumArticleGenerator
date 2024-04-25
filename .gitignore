@@ -7,3 +7,9 @@ __pycache__/
 # training
 *.csv
 exp/
+
+# virtual environmet
+env/
+.env/
+venv/
+.venv/
