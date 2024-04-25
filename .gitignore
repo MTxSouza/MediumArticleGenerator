@@ -1,0 +1,5 @@
+# Python stuffs
+__pycache__/
+
+# model
+*.pt
