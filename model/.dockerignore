@@ -1,0 +1,12 @@
+# Python stuffs
+__pycache__/
+
+# model
+*.pt
+
+# training
+*.csv
+exp/
+
+# docs
+*.md
