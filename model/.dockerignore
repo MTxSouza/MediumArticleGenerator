@@ -5,7 +5,6 @@ __pycache__/
 *.pt
 
 # training
-*.csv
 exp/
 
 # docs
