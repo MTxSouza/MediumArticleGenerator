@@ -56,7 +56,7 @@ class ArticleGenerator(nn.Module):
         count = 0
         x = torch.tensor(data=self.tokenizer.encode(text=text), requires_grad=False).unsqueeze(dim=0).to(device=self.dev)
         assert x.ndim == 2
-        print(text, end="")
+        yield text
         while count < max_len:
             if x.size(dim=1) > self.ctx:
                 x = x[:,1:] # ignoring first token of window context
