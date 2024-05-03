@@ -3,6 +3,7 @@ __pycache__/
 
 # model
 *.pt
+*.json
 
 # training
 *.csv
