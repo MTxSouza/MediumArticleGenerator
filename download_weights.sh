@@ -1,4 +1,5 @@
 #!/bin/bash
-wget https://github.com/MTxSouza/MediumArticleGenerator/releases/download/model-v1.0/weights.pt
+wget https://github.com/MTxSouza/MediumArticleGenerator/releases/download/model-v1.0/model.zip
 mkdir -p source
-mv weights.pt source/weights.pt
+unzip model.zip -d source
+rm model.zip
