@@ -14,3 +14,6 @@ env/
 .env/
 venv/
 .venv/
+
+# logs
+*.log
