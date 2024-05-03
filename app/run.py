@@ -9,7 +9,7 @@ abs_path = os.path.join(os.sep, *abs_path)
 sys.path.append(abs_path)
 
 from fastapi import FastAPI, status
-from fastapi.responses import RedirectResponse, Response
+from fastapi.responses import RedirectResponse
 
 from app.schemas import ModelDetails, SourceData
 
