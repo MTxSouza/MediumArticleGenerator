@@ -11,7 +11,7 @@ sys.path.append(abs_path)
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse
 
-from app.schemas import ModelDetails, SourceData
+from app.schemas import ModelDetails
 
 app = FastAPI()
 
