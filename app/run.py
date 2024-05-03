@@ -31,13 +31,3 @@ async def model_details():
         feed_forward_dim=3072,
         context_window=512
     )
-
-@app.get(path="/download/{source}", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
-async def get_model_weights(source: str, version: str = "1.0"):
-    """Download the pretrained weights of model."""
-    try:
-        file = SourceData[source].value
-    except KeyError:
-        return Response(content=f"Invalid source", status_code=status.HTTP_400_BAD_REQUEST)
-    url = f"https://github.com/MTxSouza/MediumArticleGenerator/releases/download/{source}-v{version}/{file}"
-    return RedirectResponse(url=url)
