@@ -26,7 +26,6 @@ class ArticleGenerator(nn.Module):
         ) -> None:
         super().__init__()
         self.ctx = context
-        self.eos = vocab_size - 1
         self.emb = nn.Embedding(num_embeddings=vocab_size, embedding_dim=emb_dim)
         self.pe = PositionalEncoding(context=context, emb_dim=emb_dim)
         self.layers = nn.Sequential(*[DecoderLayer(emb_dim=emb_dim, head_dim=head_dim, context=context, ff_dim=ff_dim, dropout_rate=dropout_rate) for _ in range(n_layers)])
@@ -61,6 +60,8 @@ class ArticleGenerator(nn.Module):
             if x.size(dim=1) > self.ctx:
                 x = x[:,1:] # ignoring first token of window context
             token = self.predict_next_token(x)
+            if token.item() == self.tokenizer.eos: # end of sentence
+                break
             yield self.tokenizer.decode(tokens=[token.item()])
             x = torch.cat(tensors=[x, token.unsqueeze(dim=0)], dim=1)
             count += 1

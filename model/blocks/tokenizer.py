@@ -41,6 +41,7 @@ class Tokenizer:
         self.vocab = {int(k): v for k, v in vocab.items()}
         self.lookup = {int(k): int(v) for k, v in lookup_vocab.items()}
         self.unk = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.UNK)[0])
+        self.eos = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.EOS)[0])
 
     def __len__(self) -> int:
         """Return the size of vocabulary."""
