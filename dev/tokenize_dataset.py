@@ -9,9 +9,9 @@ import argparse
 
 import tqdm
 
-from dev.utils.data import (create_directory, read_text_from_csv_file,
-                            remove_links, remove_non_utf_8, save_json_file,
-                            save_numpy_file)
+from dev.utils.data import remove_links, remove_non_utf_8
+from dev.utils.file import (create_directory, read_text_from_csv_file,
+                            save_json_file, save_numpy_file)
 from model.blocks.tokenizer import TikTokenizer, Tokenizer
 
 
@@ -53,7 +53,7 @@ def main():
     print("Creating vocabulary...")
     custom_vocab = {}
     vocab_mapper = {}
-    for unique_tk in tqdm(iterable=unique_tokens):
+    for unique_tk in tqdm.tqdm(iterable=unique_tokens):
         str_token = TikTokenizer.decode(tokens=[unique_tk])
         idx = len(custom_vocab)
         custom_vocab[idx] = str_token
@@ -68,8 +68,8 @@ def main():
     # saving results
     print("Saving the results...")
     create_directory(directory="source")
-    save_json_file(filepath="source/vocab.json", data=custom_vocab)
-    save_json_file(filepath="source/mapper.json", data=vocab_mapper)
-    save_numpy_file(filepath="source/tokens.npz", data=tokens)
+    save_json_file(filepath="./source/vocab.json", data=custom_vocab)
+    save_json_file(filepath="./source/mapper.json", data=vocab_mapper)
+    save_numpy_file(filepath="./source/tokens.npz", data=tokens)
 
     print("Done!")
