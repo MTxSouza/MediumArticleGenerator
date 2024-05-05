@@ -29,4 +29,4 @@ async def model_details():
 @app.get(path="/generate", status_code=status.HTTP_102_PROCESSING)
 async def generate(text: str = "<|sos|>", max_tokens: int = 100):
     """Run the model inference and return it's generated text."""
-    return StreamingResponse(content=model.generate(text=text, max_len=max_tokens), status_code=status.HTTP_201_CREATED)
+    return StreamingResponse(content=model.generate(text=text, max_len=max_tokens), status_code=status.HTTP_200_OK)
