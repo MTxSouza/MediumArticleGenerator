@@ -1,28 +1,16 @@
 """
 Utility functions for data manipulation and processing.
 """
-import csv
-import json
-import os
 import re
 
 import numpy as np
+import torch
+from torch.utils.data import Dataset
 
 # global variables
 _non_utf8_characters_filter = re.compile(pattern=r"[^\x00-\x7F]")
 _link_pattern = re.compile(pattern=r"https?://\S+")
 
-
-# === Numpy ===
-def save_numpy_file(filepath, data):
-    """
-    Save the data as compressed numpy file.
-    ---
-    Params:
-        - filepath (str) : The path to the compressed numpy file.
-        - data (np.ndarray) : The data to save as compressed numpy file.
-    """
-    np.savez_compressed(file=filepath, data=data)
 
 # === String ===
 def remove_non_utf_8(text):
@@ -48,51 +36,50 @@ def remove_links(text):
     """
     return _link_pattern.sub(repl="", string=text)
 
-# === Directory ===
-def create_directory(directory):
+# === Torch ===
+def get_device():
     """
-    Create the directory if it doesn't exists.
+    Get the device for the model.
     ---
-    Params:
-        - directory (str) : The path to the directory.
-    """
-    os.makedirs(name=directory, exist_ok=True)
-
-# === JSON ===
-def save_json_file(filepath, data):
-    """
-    Save the data as JSON file.
-    ---
-    Params:
-        - filepath (str) : The path to the JSON file.
-        - data (dict) : The data to save as JSON file.
-    """
-    with open(file=filepath, mode="w", encoding="utf-8") as file_buffer:
-        json.dump(obj=data, fp=file_buffer, indent=4)
-
-# === CSV ===
-def read_text_from_csv_file(filepath, title = False):
-    """
-    Read the text data from CSV file.
-    ---
-    Params:
-        - filepath (str) : The path to the CSV file.
-        - title (bool) : Whether to include the title or not. The `title` column must exists.
     Output:
-        - list[[str | None, str]] : The list of text data from CSV file.
+        - torch.device : The device for the model.
     """
-    with open(file=filepath, mode="r", encoding="utf-8") as file_buffer:
-        reader = csv.reader(file_buffer)
+    return torch.device(name="cuda" if torch.cuda.is_available() else "cpu")
 
-        # checking columns
-        columns = next(reader)
-        text_index = columns.index("text")
 
-        if title:
-            title_index = columns.index("title")
+class ArticleDataset(Dataset):
 
-        dataset = []
-        for row in reader:
-            dataset.append([row[title_index] if title else None, row[text_index]])
+    def __init__(self, articles, context, n_iter, batch_size) -> None:
+        """
+        Custom dataset to generate the training data for the LLM model.
+        ---
+        Params:
+            - articles (list[int]) : The articles to generate the training data.
+            - context (int) : The context size for the model.
+            - n_iter (int) : Number of iterations in this set.
+            - batch_size (int) : The batch size for the training data.
+        """
+        super().__init__()
+        self.len = int(n_iter * batch_size)
+        self.x = articles
+        self.ctx = context
+        self.limit = len(articles) - self.ctx - 1
 
-    return dataset
+    def __len__(self):
+        """Get the length of the dataset."""
+        return self.len
+
+    def __getitem__(self, index):
+        """Get the item from the dataset."""
+        index_content = np.random.randint(low=0, high=self.limit, size=1).item()
+
+        x = self.x[index_content:index_content+self.ctx]
+        y = self.x[index_content+1:index_content+self.ctx+1]
+
+        np_x = np.asarray(a=x, dtype=np.int64)
+        np_y = np.asarray(a=y, dtype=np.int64)
+
+        t_x = torch.tensor(data=np_x, requires_grad=False).long()
+        t_y = torch.tensor(data=np_y, requires_grad=False).long()
+
+        return t_x, t_y
