@@ -19,6 +19,11 @@ class TikTokenizer:
         }
     )
 
+    @staticmethod
+    def list_models():
+        """Return the list of available models."""
+        return tiktoken.list_encoding_names()
+
     @classmethod
     def vocab_size(cls) -> int:
         """Return the size of vocabulary."""
