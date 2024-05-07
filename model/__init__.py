@@ -27,7 +27,14 @@ class ArticleGenerator(nn.Module):
         self.ctx = context
         self.emb = nn.Embedding(num_embeddings=vocab_size, embedding_dim=emb_dim)
         self.pe = PositionalEncoding(context=context, emb_dim=emb_dim)
-        self.layers = nn.Sequential(*[DecoderLayer(emb_dim=emb_dim, head_dim=head_dim, context=context, ff_dim=ff_dim, dropout_rate=dropout_rate) for _ in range(n_layers)])
+        self.layers = nn.Sequential(*[DecoderLayer(
+                emb_dim=emb_dim,
+                head_dim=head_dim,
+                context=context,
+                ff_dim=ff_dim,
+                dropout_rate=dropout_rate
+            ) for _ in range(n_layers)]
+        )
         self.norm = nn.LayerNorm(normalized_shape=emb_dim)
         self.out = nn.Linear(in_features=emb_dim, out_features=vocab_size)
 
@@ -74,7 +81,10 @@ class ArticleGenerator(nn.Module):
         """
         max_len = float("inf") if max_len is None else max_len
         count = 0
-        x = torch.tensor(data=self.tokenizer.encode(text=text), requires_grad=False).unsqueeze(dim=0).to(device=self.dev)
+        x = torch.tensor(
+            data=self.tokenizer.encode(text=text),
+            requires_grad=False
+        ).unsqueeze(dim=0).to(device=self.dev)
         assert x.ndim == 2
         yield text
         while count < max_len:
