@@ -94,14 +94,14 @@ class Tokenizer:
         custom_tokens = [self.lookup.get(tk, self.unk) for tk in tik_tokens]
         return custom_tokens
 
-    def decode(self, tokens, apply_join = True) -> str:
+    def decode(self, tokens, apply_join = True):
         """
         Convert a sequence of numbers/indices into a sequence of characters.
         Args:
             tokens (List[int]) : The list of numbers/indices.
             apply_join (bool) : Whether to join the characters or not. (default: True)
         Output:
-            str : The output text.
+            str | List[str] : The output text.
         """
         string = [self.vocab.get(tk) for tk in tokens]
         if apply_join:
