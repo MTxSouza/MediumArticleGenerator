@@ -107,8 +107,12 @@ def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, 
 
     for curr_epoch in range(1, params.get("epochs") + 1):
 
-        print(f"EPOCH {curr_epoch}/{params.get("epochs")}")
-        print(f"Overfit {overfit}/{params.get("early_stop")} | Best valid loss {best_loss} | Last save : {last_save}")
+        print("EPOCH {0}/{1}".format(curr_epoch, params.get("epochs")))
+        print("Overfit {0}/{1} | Best valid loss {2} | Last save : {3}".format(
+            overfit,
+            params.get("early_stop"),
+            best_loss, last_save
+        ))
         if overfit == params.get("early_stop"):
             break
 
