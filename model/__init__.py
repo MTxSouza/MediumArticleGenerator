@@ -6,8 +6,8 @@ from typing import Generator
 import torch
 import torch.nn as nn
 
-from model.blocks.nn import DecoderLayer, PositionalEncoding
-from model.blocks.tokenizer import Tokenizer
+from model.nn import DecoderLayer, PositionalEncoding
+from model.tokenizer import Tokenizer
 
 
 class ArticleGenerator(nn.Module):

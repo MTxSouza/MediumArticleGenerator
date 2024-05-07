@@ -20,7 +20,7 @@ from torch.utils.data import DataLoader
 from dev.utils.data import ArticleDataset, get_device
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
-from model.blocks.tokenizer import Tokenizer
+from model.tokenizer import Tokenizer
 
 
 def _arguments():

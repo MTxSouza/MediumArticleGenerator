@@ -12,7 +12,7 @@ import tqdm
 from dev.utils.data import remove_links, remove_non_utf_8
 from dev.utils.file import (create_directory, read_text_from_csv_file,
                             save_json_file, save_numpy_file)
-from model.blocks.tokenizer import TikTokenizer, Tokenizer
+from model.tokenizer import TikTokenizer, Tokenizer
 
 
 def _arguments():
