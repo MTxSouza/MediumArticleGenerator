@@ -21,45 +21,88 @@ class TikTokenizer:
 
     @staticmethod
     def list_models():
-        """Return the list of available models."""
+        """
+        Return the list of available models.
+        Output:
+            List[str]: The list of available models.
+        """
         return tiktoken.list_encoding_names()
 
     @classmethod
-    def vocab_size(cls) -> int:
-        """Return the size of vocabulary."""
+    def vocab_size(cls):
+        """
+        Return the size of vocabulary.
+        Output:
+            int: The size of vocabulary.
+        """
         return cls.enc.max_token_value
 
     @classmethod
-    def encode(cls, text: str) -> list[int]:
-        """Convert a sequence of characters into a sequence of numbers/indices."""
+    def encode(cls, text):
+        """
+        Convert a sequence of characters into a sequence of numbers/indices.
+        Args:
+            text (str) : The input text.
+        Output:
+            List[int] : The list of numbers/indices.
+        """
         return cls.enc.encode(text=text, allowed_special={cls.SOS, cls.EOS, cls.UNK})
 
     @classmethod
-    def decode(cls, tokens: list[int]) -> str:
-        """Convert a sequence of numbers/indices into a sequence of characters."""
+    def decode(cls, tokens):
+        """
+        Convert a sequence of numbers/indices into a sequence of characters.
+        Args:
+            tokens (List[int]) : The list of numbers/indices.
+        Output:
+            str : The output text.
+        """
         return cls.enc.decode(tokens=tokens)
 
 
 class Tokenizer:
 
-    def __init__(self, vocab: dict[int, str], lookup_vocab: dict[int, int]) -> None:
+    def __init__(self, vocab, lookup_vocab):
+        """
+        Tokenizer class for converting text to numbers and vice versa.
+        Args:
+            vocab (Dict[int, str]) : The vocabulary dictionary.
+            lookup_vocab (Dict[int, int]) : The lookup vocabulary dictionary.
+        """
         self.vocab = {int(k): v for k, v in vocab.items()}
         self.lookup = {int(k): int(v) for k, v in lookup_vocab.items()}
         self.unk = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.UNK)[0])
         self.eos = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.EOS)[0])
 
-    def __len__(self) -> int:
-        """Return the size of vocabulary."""
+    def __len__(self):
+        """
+        Return the size of vocabulary.
+        Output:
+            int: The size of vocabulary.
+        """
         return len(self.vocab)
 
-    def encode(self, text: str) -> list[int]:
-        """Convert a sequence of characters into a sequence of numbers/indices."""
+    def encode(self, text):
+        """
+        Convert a sequence of characters into a sequence of numbers/indices.
+        Args:
+            text (str) : The input text.
+        Output:
+            List[int] : The list of numbers/indices.
+        """
         tik_tokens = TikTokenizer.encode(text=text)
         custom_tokens = [self.lookup.get(tk, self.unk) for tk in tik_tokens]
         return custom_tokens
 
-    def decode(self, tokens: list[int], apply_join: bool = True) -> str:
-        """Convert a sequence of numbers/indices into a sequence of characters."""
+    def decode(self, tokens, apply_join = True) -> str:
+        """
+        Convert a sequence of numbers/indices into a sequence of characters.
+        Args:
+            tokens (List[int]) : The list of numbers/indices.
+            apply_join (bool) : Whether to join the characters or not. (default: True)
+        Output:
+            str : The output text.
+        """
         string = [self.vocab.get(tk) for tk in tokens]
         if apply_join:
             return "".join(string)
