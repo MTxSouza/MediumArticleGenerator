@@ -45,7 +45,7 @@ def main():
             next(reader, None)
 
         for title, article in tqdm.tqdm(iterable=reader, desc="Processing dataset..."):
-        
+
             # removing white spaces from the start and end of the string
             title = title.strip()
             article = article.strip()
