@@ -26,6 +26,12 @@ class TikTokenizer:
         }
     )
 
+    INDEX_SOT = _new_special_tokens.get(SOT)
+    INDEX_EOT = _new_special_tokens.get(EOT)
+    INDEX_SOA = _new_special_tokens.get(SOA)
+    INDEX_EOA = _new_special_tokens.get(EOA)
+    INDEX_UNK = _new_special_tokens.get(UNK)
+
     @staticmethod
     def list_models():
         """
