@@ -301,3 +301,7 @@ def main():
         device=device,
         **vars(args)
     )
+
+
+if __name__=="__main__":
+    main()
