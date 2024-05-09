@@ -4,18 +4,25 @@ import tiktoken
 class TikTokenizer:
 
     cl100k_base = tiktoken.get_encoding(encoding_name="cl100k_base")
-    SOS = "<|sos|>"
-    EOS = "<|eos|>"
-    UNK = "<|unk|>"
+    SOT = "<|sot|>" # start of title
+    EOT = "<|eot|>" # end of title
+    SOA = "<|soa|>" # start of article
+    EOA = "<|eoa|>" # end of article
+    UNK = "<|unk|>" # unknown token
+
+    __current_vocab_size = cl100k_base.n_vocab
+    _new_special_tokens = {}
+    for __token in (SOT, EOT, SOA, EOA, UNK):
+        _new_special_tokens[__token] = __current_vocab_size
+        __current_vocab_size += 1
+
     enc = tiktoken.Encoding(
         name="cl100k_im",
         pat_str=cl100k_base._pat_str,
         mergeable_ranks=cl100k_base._mergeable_ranks,
         special_tokens={
             **cl100k_base._special_tokens,
-            SOS: 100264,
-            EOS: 100265,
-            UNK: 100266,
+            **_new_special_tokens
         }
     )
 
@@ -46,7 +53,7 @@ class TikTokenizer:
         Output:
             List[int] : The list of numbers/indices.
         """
-        return cls.enc.encode(text=text, allowed_special={cls.SOS, cls.EOS, cls.UNK})
+        return cls.enc.encode(text=text, allowed_special=set(list(cls._new_special_tokens)))
 
     @classmethod
     def decode(cls, tokens):
@@ -71,8 +78,12 @@ class Tokenizer:
         """
         self.vocab = {int(k): v for k, v in vocab.items()}
         self.lookup = {int(k): int(v) for k, v in lookup_vocab.items()}
-        self.unk = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.UNK)[0])
-        self.eos = self.lookup.get(TikTokenizer.encode(text=TikTokenizer.EOS)[0])
+
+        # special tokens
+        self._special_tokens = {
+            tk: self.lookup.get(TikTokenizer.encode(text=TikTokenizer.UNK)[0])
+            for tk, idx in self.lookup.items()
+        }
 
     def __len__(self):
         """
@@ -91,7 +102,7 @@ class Tokenizer:
             List[int] : The list of numbers/indices.
         """
         tik_tokens = TikTokenizer.encode(text=text)
-        custom_tokens = [self.lookup.get(tk, self.unk) for tk in tik_tokens]
+        custom_tokens = [self.lookup.get(tk, self._special_tokens.get("<|unk|>")) for tk in tik_tokens]
         return custom_tokens
 
     def decode(self, tokens, apply_join = True):
