@@ -66,9 +66,21 @@ def main():
     print(f"Number of articles: {len(token_chunks)}")
 
     # dropping long articles
-    print("Dropping long articles...")
-    token_chunks = [chunk for chunk in token_chunks if len(chunk) <= args.drop_long]
+    non_long_token_chunks = []
+    longest_article = 0
+    shortest_article = float("inf")
+    for chunk in tqdm.tqdm(iterable=token_chunks, desc="Dropping long articles..."):
+        chunk_len = len(chunk)
+        if chunk_len <= args.drop_long:
+            non_long_token_chunks.append(chunk)
+
+        if chunk_len > longest_article:
+            longest_article = chunk_len
+        elif chunk_len < shortest_article:
+            shortest_article = chunk_len
     print(f"Number of articles after dropping: {len(token_chunks)}")
+    print(f"Longest article: {longest_article} tokens.")
+    print(f"Shortest article: {shortest_article} tokens.")
 
     # joining tokens
     print("Joining tokens...")
