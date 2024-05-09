@@ -33,8 +33,14 @@ def main():
     # converting into a single string
     print("Concatenating the dataset in a single string...")
     dataset_str = "".join(
-        TikTokenizer.SOS + title + "\n\n\t" if title else "" + text + TikTokenizer.EOS
-        for title, text in dataset
+        TikTokenizer.SOT + \
+        title + \
+        TikTokenizer.EOT + \
+        TikTokenizer.SOA + \
+        article + \
+        TikTokenizer.EOA \
+        if title else ""
+        for title, article in dataset
     ).strip() # removing whitespaces in borders
 
     # removing non-UTF-8 characters
