@@ -20,6 +20,7 @@ def _arguments():
     parser = argparse.ArgumentParser(description="Tokenize the text dataset for training the model.")
     parser.add_argument("--file", type=str, required=True, help="Path to the input CSV file.")
     parser.add_argument("--only-utf-8", action="store_true", help="Only consider the UTF-8 characters.")
+    parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
     return parser.parse_args()
 
 
@@ -53,8 +54,28 @@ def main():
     dataset_str = remove_links(text=dataset_str)
 
     # creating vocabulary
+    print("Tokenizing the dataset...")
+    tokens = TikTokenizer.encode(text=dataset_str)
+
+    # filtering articles
+    token_chunks = []
+    for token in tqdm.tqdm(iterable=tokens, desc="Filtering articles..."):
+        if token == TikTokenizer.INDEX_SOT:
+            token_chunks.append([]) # creating a new chunk
+        token_chunks[-1].append(token)
+    print(f"Number of articles: {len(token_chunks)}")
+
+    # dropping long articles
+    print("Dropping long articles...")
+    token_chunks = [chunk for chunk in token_chunks if len(chunk) <= args.drop_long]
+    print(f"Number of articles after dropping: {len(token_chunks)}")
+
+    # joining tokens
+    print("Joining tokens...")
+    tokens = [token for chunk in token_chunks for token in chunk]
+
     print("Retrieving unique tokens...")
-    unique_tokens = sorted(list(set(TikTokenizer.encode(text=dataset_str + TikTokenizer.UNK))))
+    unique_tokens = sorted(list(set(tokens + TikTokenizer.encode(text=TikTokenizer.UNK))))
 
     print("Creating vocabulary...")
     custom_vocab = {}
