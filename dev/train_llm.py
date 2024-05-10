@@ -56,7 +56,7 @@ def model_metric(yhat, y, tokenizer):
     base_yhat = yhat.view(batch_size * ctx, -1)
     base_y = y.view(-1)
 
-    loss = F.cross_entropy(input=base_yhat, target=base_y)
+    loss = F.cross_entropy(input=base_yhat, target=base_y, ignore_index=tokenizer.pad_index)
 
     pred = yhat.argmax(dim=-1)
     pred_tokens = [tokenizer.decode(tokens=tokens, apply_join=False) for tokens in pred.tolist()]
