@@ -46,9 +46,13 @@ def main():
         if args.header:
             next(reader, None)
 
-        for title, article in tqdm.tqdm(iterable=reader, desc="Processing dataset..."):
+        for row in tqdm.tqdm(iterable=reader, desc="Processing dataset..."):
 
-            # removing white spaces from the start and end of the string
+            # Retrieve the title and article from the row
+            title = row[0]
+            article = row[1]
+
+            # Removing white spaces from the start and end of the string
             title = title.strip()
             article = article.strip()
             if not article or not title:
