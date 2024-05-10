@@ -4,7 +4,8 @@ Main script for testing the data loader and see the output token.
 import argparse
 
 from dev.utils.data import ArticleDataset
-from dev.utils.file import load_numpy_file
+from dev.utils.file import load_json_file, load_numpy_file
+from model.tokenizer import Tokenizer
 
 
 def parse_args():
@@ -29,8 +30,13 @@ def main():
     assert args.context > 0 and args.context < tokens.shape[1], \
         "The context size must be positive and less than the number of tokens."
 
+    # Load Tokenizer
+    vocab = load_json_file('./source/vocab.json')
+    mapper = load_json_file('./source/mapper.json')
+    tokenizer = Tokenizer(vocab=vocab, lookup_vocab=mapper)
+
     # Create the dataset
-    dataset = ArticleDataset(articles=tokens, context=args.context)
+    dataset = ArticleDataset(articles=tokens, context=args.context, pad_index=tokenizer.pad_index)
     print("Dataset size: ", len(dataset))
     print("Context size: ", dataset.ctx)
     print("Limit: ", dataset.limit)
