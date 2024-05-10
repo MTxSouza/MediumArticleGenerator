@@ -92,8 +92,8 @@ class Tokenizer:
 
         # special tokens
         self._special_tokens = {
-            tk: self.lookup.get(TikTokenizer.encode(text=idx)[0])
-            for tk, idx in self._new_special_tokens.items()
+            tk: self.lookup.get(TikTokenizer.encode(text=tk)[0])
+            for tk, _ in TikTokenizer._new_special_tokens.items()
         }
 
     def __len__(self):
