@@ -22,6 +22,7 @@ def _arguments():
   parser.add_argument("--file", type=str, required=True, help="Path to the input CSV file.")
   parser.add_argument("--only-utf-8", action="store_true", help="Only consider the UTF-8 characters.")
   parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
+  parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
   parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
   return parser.parse_args()
 
@@ -83,7 +84,7 @@ def main():
 
             # Filter articles based on length
             article_length = len(article_tokens)
-            if article_length <= args.drop_long:
+            if article_length >= args.drop_short and article_length <= args.drop_long:
                 tokens.append(article_tokens)  # Add tokens to the main list
                 unique_tokens.extend(article_tokens)  # Add tokens to the unique list
 
