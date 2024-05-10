@@ -16,11 +16,12 @@ _link_pattern = re.compile(pattern=r"https?://\S+")
 def remove_non_utf_8(text):
     """
     Remove the non-UTF-8 characters from the text.
-    ---
-    Params:
-        - text (str) : The text to remove non-UTF-8 characters.
-    Output:
-        - str : The text after removing non-UTF-8 characters.
+
+    Args:
+        text (str) : The text to remove non-UTF-8 characters.
+
+    Returns:
+        str : The text after removing non-UTF-8 characters.
     """
     return _non_utf8_characters_filter.sub(repl="", string=text)
 
@@ -28,11 +29,12 @@ def remove_non_utf_8(text):
 def remove_links(text):
     """
     Remove the links from the text.
-    ---
-    Params:
-        - text (str) : The text to remove the links.
-    Output:
-        - str : The text after removing the links.
+
+    Args:
+        text (str) : The text to remove the links.
+
+    Returns:
+        str : The text after removing the links.
     """
     return _link_pattern.sub(repl="", string=text)
 
@@ -40,9 +42,9 @@ def remove_links(text):
 def get_device():
     """
     Get the device for the model.
-    ---
-    Output:
-        - torch.device : The device for the model.
+
+    Returns:
+        torch.device : The device for the model.
     """
     return torch.device(name="cuda" if torch.cuda.is_available() else "cpu")
 
@@ -52,12 +54,12 @@ class ArticleDataset(Dataset):
     def __init__(self, articles, context, n_iter, batch_size) -> None:
         """
         Custom dataset to generate the training data for the LLM model.
-        ---
-        Params:
-            - articles (list[int]) : The articles to generate the training data.
-            - context (int) : The context size for the model.
-            - n_iter (int) : Number of iterations in this set.
-            - batch_size (int) : The batch size for the training data.
+
+        Args:
+            articles (list[int]) : The articles to generate the training data.
+            context (int) : The context size for the model.
+            n_iter (int) : Number of iterations in this set.
+            batch_size (int) : The batch size for the training data.
         """
         super().__init__()
         self.len = int(n_iter * batch_size)
