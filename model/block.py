@@ -8,6 +8,7 @@ class PositionalEncoding(nn.Module):
     def __init__(self, context, emb_dim):
         """
         Positional encoding for transformer. Adds positional information to the input tensor.
+
         Args:
             context (int) : The maximum length of the sequence.
             emb_dim (int) : The dimension of the embedding.
@@ -30,9 +31,11 @@ class PositionalEncoding(nn.Module):
     def forward(self, x):
         """
         Forward pass of the positional encoding.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         B, T, D = x.size()
@@ -45,6 +48,7 @@ class FeedForward(nn.Module):
     def __init__(self, emb_dim, ff_dim, dropout_rate = 0.2):
         """
         Feed forward layer for transformer. Consists of two linear layers with a ReLU activation function.
+
         Args:
             emb_dim (int) : The dimension of the embedding.
             ff_dim (int) : The dimension of the feed forward layer.
@@ -59,9 +63,11 @@ class FeedForward(nn.Module):
     def forward(self, x):
         """
         Forward pass of the feed forward layer.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         z1 = self.linear_1(x)
@@ -76,6 +82,7 @@ class Attention(nn.Module):
     def __init__(self, emb_dim, head_dim, context, dropout_rate):
         """
         Attention layer for transformer. Computes the attention weights and applies them to the input tensor.
+
         Args:
             emb_dim (int) : The dimension of the embedding.
             head_dim (int) : The dimension of the attention head.
@@ -95,9 +102,11 @@ class Attention(nn.Module):
     def forward(self, x):
         """
         Forward pass of the attention layer.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         B, T, C = x.size()
@@ -121,6 +130,7 @@ class MultiAttention(nn.Module):
     def __init__(self, emb_dim, head_dim, context, dropout_rate):
         """
         Multi-head attention layer for transformer. Computes multiple attention heads and concatenates them.
+
         Args:
             emb_dim (int) : The dimension of the embedding.
             head_dim (int) : The dimension of the attention head.
@@ -136,9 +146,11 @@ class MultiAttention(nn.Module):
     def forward(self, x):
         """
         Forward pass of the multi-head attention layer.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         out = torch.cat(tensors=[attention(x) for attention in self.attention], dim=-1)
@@ -152,6 +164,7 @@ class DecoderLayer(nn.Module):
     def __init__(self, emb_dim, head_dim, context, ff_dim, dropout_rate):
         """
         Decoder layer for transformer. Consists of a multi-head attention layer and a feed forward layer.
+
         Args:
             emb_dim (int) : The dimension of the embedding.
             head_dim (int) : The dimension of the attention head.
@@ -168,9 +181,11 @@ class DecoderLayer(nn.Module):
     def forward(self, x):
         """
         Forward pass of the decoder layer.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         x_norm = self.norm_1(x)
@@ -189,6 +204,7 @@ class Decoder(nn.Module):
     def __init__(self, n_layers, decoder):
         """
         Decoder for transformer. Consists of multiple decoder layers.
+
         Args:
             n_layers (int) : The number of decoder layers.
             decoder (DecoderLayer) : The decoder layer.
@@ -199,9 +215,11 @@ class Decoder(nn.Module):
     def forward(self, x):
         """
         Forward pass of the decoder.
+
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+
+        Returns:
             torch.Tensor : The output tensor.
         """
         return self.layers(x)
