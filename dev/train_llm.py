@@ -226,15 +226,11 @@ def main():
     print("Creating the dataset...")
     train_dataset = ArticleDataset(
         articles=train_tokens,
-        context=args.context_size,
-        n_iter=args.train_set,
-        batch_size=args.batch_size
+        context=args.context_size
     )
     valid_dataset = ArticleDataset(
         articles=valid_tokens,
-        context=args.context_size,
-        n_iter=args.valid_set,
-        batch_size=args.batch_size
+        context=args.context_size
     )
 
     # creating the dataloader
