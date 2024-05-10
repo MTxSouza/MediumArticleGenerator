@@ -38,7 +38,8 @@ class TikTokenizer:
     def list_models():
         """
         Return the list of available models.
-        Output:
+
+        Returns:
             List[str]: The list of available models.
         """
         return tiktoken.list_encoding_names()
@@ -47,7 +48,8 @@ class TikTokenizer:
     def vocab_size(cls):
         """
         Return the size of vocabulary.
-        Output:
+
+        Returns:
             int: The size of vocabulary.
         """
         return cls.enc.max_token_value
@@ -56,9 +58,11 @@ class TikTokenizer:
     def encode(cls, text):
         """
         Convert a sequence of characters into a sequence of numbers/indices.
+
         Args:
             text (str) : The input text.
-        Output:
+
+        Returns:
             List[int] : The list of numbers/indices.
         """
         return cls.enc.encode(text=text, allowed_special=set(
@@ -70,9 +74,11 @@ class TikTokenizer:
     def decode(cls, tokens):
         """
         Convert a sequence of numbers/indices into a sequence of characters.
+
         Args:
             tokens (List[int]) : The list of numbers/indices.
-        Output:
+
+        Returns:
             str : The output text.
         """
         return cls.enc.decode(tokens=tokens)
@@ -83,6 +89,7 @@ class Tokenizer:
     def __init__(self, vocab, lookup_vocab):
         """
         Tokenizer class for converting text to numbers and vice versa.
+
         Args:
             vocab (Dict[int, str]) : The vocabulary dictionary.
             lookup_vocab (Dict[int, int]) : The lookup vocabulary dictionary.
@@ -96,10 +103,21 @@ class Tokenizer:
             for tk, _ in TikTokenizer._new_special_tokens.items()
         }
 
+    @property
+    def pad_index(self):
+        """
+        Return the index of padding token.
+
+        Returns:
+            int: The index of padding token.
+        """
+        return self._special_tokens.get("<|pad|>")
+
     def __len__(self):
         """
         Return the size of vocabulary.
-        Output:
+
+        Returns:
             int: The size of vocabulary.
         """
         return len(self.vocab)
@@ -107,9 +125,11 @@ class Tokenizer:
     def encode(self, text):
         """
         Convert a sequence of characters into a sequence of numbers/indices.
+
         Args:
             text (str) : The input text.
-        Output:
+
+        Returns:
             List[int] : The list of numbers/indices.
         """
         tik_tokens = TikTokenizer.encode(text=text)
@@ -119,10 +139,12 @@ class Tokenizer:
     def decode(self, tokens, apply_join = True):
         """
         Convert a sequence of numbers/indices into a sequence of characters.
+
         Args:
             tokens (List[int]) : The list of numbers/indices.
             apply_join (bool) : Whether to join the characters or not. (default: True)
-        Output:
+
+        Returns:
             str | List[str] : The output text.
         """
         string = [self.vocab.get(tk) for tk in tokens]
