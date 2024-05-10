@@ -206,7 +206,7 @@ def main():
 
     # loading Tokenizer
     print("Loading the Tokenizer...")
-    tokenizer = Tokenizer(vocab=vocab, mapper=mapper)
+    tokenizer = Tokenizer(vocab=vocab, lookup_vocab=mapper)
 
     # preparing dataset
     print("-" * 100)
