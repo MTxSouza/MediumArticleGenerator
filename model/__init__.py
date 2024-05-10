@@ -4,7 +4,7 @@ This module provides the entire implementation of Medium Article Generator model
 import torch
 import torch.nn as nn
 
-from model.nn import DecoderLayer, PositionalEncoding
+from model.block import DecoderLayer, PositionalEncoding
 
 
 class ArticleGenerator(nn.Module):
