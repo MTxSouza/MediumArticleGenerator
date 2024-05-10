@@ -46,7 +46,7 @@ def get_device():
     Returns:
         torch.device : The device for the model.
     """
-    return torch.device(name="cuda" if torch.cuda.is_available() else "cpu")
+    return torch.device(device="cuda" if torch.cuda.is_available() else "cpu")
 
 
 class ArticleDataset(Dataset):
