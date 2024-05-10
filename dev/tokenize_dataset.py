@@ -107,6 +107,7 @@ def main():
         idx = len(custom_vocab)
         custom_vocab[idx] = str_token
         vocab_mapper[token] = idx
+    print(f"Vocabulary size: {len(custom_vocab)}")
 
     # Remap the tokens to the new vocabulary
     remapped_tokens = []
