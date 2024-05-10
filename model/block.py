@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from model.logger import model_logger
+
 
 class PositionalEncoding(nn.Module):
 
@@ -38,8 +40,11 @@ class PositionalEncoding(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Positional encoding: x shape: %s", x.size())
+        model_logger.debug("Positional encoding: pe shape: %s", self.pe.size())
         B, T, D = x.size()
         x_pe = x + self.pe[:,:T,:]
+        model_logger.debug("Positional encoding: x_pe shape: %s", x_pe.size())
         return x_pe
 
 
@@ -70,10 +75,13 @@ class FeedForward(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Feed forward: x shape: %s", x.size())
         z1 = self.linear_1(x)
+        model_logger.debug("Feed forward: z1 shape: %s", z1.size())
         a1 = self.relu(z1)
         a1 = self.dropout(a1)
         z2 = self.linear_2(a1)
+        model_logger.debug("Feed forward: z2 shape: %s", z2.size())
         return z2
 
 
@@ -109,18 +117,25 @@ class Attention(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Attention: x shape: %s", x.size())
         B, T, C = x.size()
         Q = self.query(x)
+        model_logger.debug("Attention: Q shape: %s", Q.size())
         K = self.key(x)
+        model_logger.debug("Attention: K shape: %s", K.size())
         V = self.value(x)
+        model_logger.debug("Attention: V shape: %s", V.size())
 
         QK = Q @ K.transpose(-2, -1) * C**-0.5
+        model_logger.debug("Attention: QK shape: %s", QK.size())
+        model_logger.debug("Attention: mask shape: %s", self.mask.size())
         attention = QK.masked_fill(self.mask[:T,:T] == 0, float("-inf"))
         attention = F.softmax(input=attention, dim=-1)
 
         attention = self.dropout(attention)
 
         out = attention @ V
+        model_logger.debug("Attention: out shape: %s", out.size())
 
         return out
 
@@ -153,8 +168,11 @@ class MultiAttention(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Multi-attention: x shape: %s", x.size())
         out = torch.cat(tensors=[attention(x) for attention in self.attention], dim=-1)
+        model_logger.debug("Multi-attention: out shape: %s", out.size())
         out = self.linear(out)
+        model_logger.debug("Multi-attention: out shape: %s", out.size())
         out = self.dropout(out)
         return out
 
@@ -188,12 +206,15 @@ class DecoderLayer(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Decoder layer: x shape: %s", x.size())
         x_norm = self.norm_1(x)
         attention = self.attention(x_norm)
+        model_logger.debug("Decoder layer: attention shape: %s", attention.size())
         attention = attention + x
 
         attention_norm = self.norm_2(attention)
         ff = self.feed_forward(attention_norm)
+        model_logger.debug("Decoder layer: ff shape: %s", ff.size())
         ff = ff + attention
 
         return ff
@@ -222,4 +243,5 @@ class Decoder(nn.Module):
         Returns:
             torch.Tensor : The output tensor.
         """
+        model_logger.debug("Decoder: x shape: %s", x.size())
         return self.layers(x)
