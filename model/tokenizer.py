@@ -61,7 +61,10 @@ class TikTokenizer:
         Output:
             List[int] : The list of numbers/indices.
         """
-        return cls.enc.encode(text=text, allowed_special=set(list(cls._new_special_tokens)))
+        return cls.enc.encode(text=text, allowed_special=set(
+            list(cls._new_special_tokens) + \
+            list(cls.cl100k_base._special_tokens)
+        ))
 
     @classmethod
     def decode(cls, tokens):
