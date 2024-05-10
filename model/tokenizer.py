@@ -9,10 +9,11 @@ class TikTokenizer:
     SOA = "<|soa|>" # start of article
     EOA = "<|eoa|>" # end of article
     UNK = "<|unk|>" # unknown token
+    PAD = "<|pad|>"
 
     __current_vocab_size = cl100k_base.n_vocab
     _new_special_tokens = {}
-    for __token in (SOT, EOT, SOA, EOA, UNK):
+    for __token in (SOT, EOT, SOA, EOA, UNK, PAD):
         _new_special_tokens[__token] = __current_vocab_size
         __current_vocab_size += 1
 
@@ -31,6 +32,7 @@ class TikTokenizer:
     INDEX_SOA = _new_special_tokens.get(SOA)
     INDEX_EOA = _new_special_tokens.get(EOA)
     INDEX_UNK = _new_special_tokens.get(UNK)
+    INDEX_PAD = _new_special_tokens.get(PAD)
 
     @staticmethod
     def list_models():
