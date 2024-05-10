@@ -65,7 +65,11 @@ def main():
             text = remove_links(text=text)
 
             # Skip empty articles
-            title, article = text.split(sep="<<|custom-separator|>>")
+            try:
+                title, article = text.split(sep="<<|custom-separator|>>")
+            except ValueError:
+                continue
+
             title = title.strip()
             article = article.strip()
             if not article or not title:
