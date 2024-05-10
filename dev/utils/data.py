@@ -51,37 +51,34 @@ def get_device():
 
 class ArticleDataset(Dataset):
 
-    def __init__(self, articles, context, n_iter, batch_size) -> None:
+    def __init__(self, articles, context) -> None:
         """
         Custom dataset to generate the training data for the LLM model.
 
         Args:
-            articles (list[int]) : The articles to generate the training data.
+            articles (numpy.ndarray) : The articles to generate the training data.
             context (int) : The context size for the model.
-            n_iter (int) : Number of iterations in this set.
-            batch_size (int) : The batch size for the training data.
         """
         super().__init__()
-        self.len = int(n_iter * batch_size)
         self.x = articles
         self.ctx = context
-        self.limit = len(articles) - self.ctx - 1
+        self.limit = self.x.shape[1] - self.ctx - 1
 
     def __len__(self):
         """Get the length of the dataset."""
-        return self.len
+        return self.x.shape[0]
 
     def __getitem__(self, index):
         """Get the item from the dataset."""
-        index_content = np.random.randint(low=0, high=self.limit, size=1).item()
+        if self.limit == 0:
+            x = self.x[index, :-1]
+            y = self.x[index, 1:]
+        else:
+            init_index = np.random.randint(low=0, high=self.limit, size=1).item()
+            x = self.x[index, init_index:self.ctx]
+            y = self.x[index, init_index + 1:self.ctx + 1]
 
-        x = self.x[index_content:index_content+self.ctx]
-        y = self.x[index_content+1:index_content+self.ctx+1]
-
-        np_x = np.asarray(a=x, dtype=np.int64)
-        np_y = np.asarray(a=y, dtype=np.int64)
-
-        t_x = torch.tensor(data=np_x, requires_grad=False).long()
-        t_y = torch.tensor(data=np_y, requires_grad=False).long()
+        t_x = torch.tensor(data=x, requires_grad=False).long()
+        t_y = torch.tensor(data=y, requires_grad=False).long()
 
         return t_x, t_y
