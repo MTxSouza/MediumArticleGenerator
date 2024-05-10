@@ -181,12 +181,11 @@ def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, 
         last_valid_loss = valid_loss
 
         run.log({
-                "epoch": curr_epoch,
-                "train_acc": train_acc,
+                "train_accuracy": train_acc,
                 "train_loss": train_loss,
-                "valid_acc": valid_acc,
+                "valid_accuracy": valid_acc,
                 "valid_loss": valid_loss,
-        })
+        }, step=curr_epoch)
         print("=" * 100)
 
     print("Training completed.")
