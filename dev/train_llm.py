@@ -225,11 +225,13 @@ def main():
     print("Creating the dataset...")
     train_dataset = ArticleDataset(
         articles=train_tokens,
-        context=args.context_size
+        context=args.context_size,
+        pad_index=tokenizer.pad_index
     )
     valid_dataset = ArticleDataset(
         articles=valid_tokens,
-        context=args.context_size
+        context=args.context_size,
+        pad_index=tokenizer.pad_index
     )
 
     # creating the dataloader
