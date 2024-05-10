@@ -85,7 +85,6 @@ class ArticleDataset(Dataset):
             limit = first_pad_index - self.ctx
         else:
             limit = 1
-        print(limit, first_pad_index, self.ctx)
         init_index = np.random.randint(low=0, high=limit, size=1).item()
 
         x = data[init_index:init_index + self.ctx]
