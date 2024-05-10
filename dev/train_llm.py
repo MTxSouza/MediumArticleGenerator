@@ -34,8 +34,6 @@ def _arguments():
     parser.add_argument("--dropout", type=float, default=0.1, help="Dropout rate for the model.")
     parser.add_argument("--train-size", type=float, default=0.8, help="Percentage of the dataset to use for training.")
     parser.add_argument("--epochs", type=int, default=1000, help="Number of epochs for training.")
-    parser.add_argument("--train-iter", type=int, default=200, help="Number of iterations in training set.")
-    parser.add_argument("--valid-iter", type=int, default=100, help="Number of iterations in validation set.")
     parser.add_argument("--batch-size", type=int, default=32, help="Batch size for training.")
     parser.add_argument("--lr", type=float, default=2e-4, help="Learning rate for training.")
     parser.add_argument("--early-stop", type=int, default=10, help="Number of epochs to wait for early stopping.")
@@ -70,7 +68,7 @@ def model_metric(yhat, y, tokenizer):
     return loss, acc
 
 
-def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, tokenizer, device, **params):
+def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **params):
     """
     Train the LLM model.
     ---
@@ -78,13 +76,14 @@ def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, 
         - model (nn.Module) : The LLM model.
         - train_loader (DataLoader) : The training dataloader.
         - valid_loader (DataLoader) : The validation dataloader.
-        - train_iter (int) : Number of iterations in training set.
-        - valid_iter (int) : Number of iterations in validation set.
         - optimizer (torch.optim.Optimizer) : The optimizer for training.
         - tokenizer (Tokenizer) : The tokenizer for the model.
         - device (torch.device) : The device for the model.
     """
     # constants
+    train_size = len(train_loader)
+    valid_size = len(valid_loader)
+
     curr_iter = 1
     last_save = 0
     best_loss = np.inf
@@ -138,8 +137,8 @@ def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, 
             train_acc += acc
 
             train_tqdm.set_description(desc=f"loss : {curr_loss} - accuracy : {acc}")
-        train_loss /= train_iter
-        train_acc /= train_iter
+        train_loss /= train_size
+        train_acc /= train_size
         print(f"[train] loss : {train_loss} - accuracy : {train_acc}")
 
         model.eval()
@@ -161,8 +160,8 @@ def train(model, train_loader, valid_loader, train_iter, valid_iter, optimizer, 
                 valid_acc += acc
 
                 valid_tqdm.set_description(desc=f"loss : {curr_loss} - accuracy : {acc}")
-            valid_loss /= valid_iter
-            valid_acc /= valid_iter
+            valid_loss /= valid_size
+            valid_acc /= valid_size
             print(f"[valid] loss : {valid_loss} - accuracy : {valid_acc}")
 
         if best_loss > valid_loss:
@@ -289,8 +288,6 @@ def main():
         model=model,
         train_loader=train_loader,
         valid_loader=valid_loader,
-        train_iter=args.train_iter,
-        valid_iter=args.valid_iter,
         optimizer=optimizer,
         tokenizer=tokenizer,
         device=device,
