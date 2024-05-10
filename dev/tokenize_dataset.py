@@ -116,7 +116,7 @@ def main():
 
     # Padding the tokens to the same length
     for token_seq in tqdm.tqdm(iterable=remapped_tokens, desc=f"Padding the tokens to {longest_article} tokens..."):
-        token_seq.extend([TikTokenizer.INDEX_PAD] * (longest_article - len(token_seq)))
+        token_seq.extend([vocab_mapper.get(TikTokenizer.INDEX_PAD)] * (longest_article - len(token_seq)))
 
     # Cast the tokens to numpy array
     numpy_tokens = np.asarray(a=remapped_tokens, dtype=np.int32)
