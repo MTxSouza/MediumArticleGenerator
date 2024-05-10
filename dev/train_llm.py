@@ -97,12 +97,15 @@ def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **par
     train_accuracies = []
     valid_accuracies = []
 
+    # wandb init
+    print("=" * 100)
+    run = wandb.init(project="Medium Article Generator", config=params)
+    run.log_artifact("./source/vocab.json")
+    run.log_artifact("./source/mapper.json")
+
     # training loop
     print("=" * 100)
     print("Training the LLM model...")
-
-    # wandb init
-    run = wandb.init(project="Medium Article Generator", config=params)
 
     for curr_epoch in range(1, params.get("epochs") + 1):
 
@@ -184,7 +187,7 @@ def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **par
                 "train_loss": train_loss,
                 "valid_accuracy": valid_acc,
                 "valid_loss": valid_loss,
-        }, step=curr_epoch)
+        }, step=curr_epoch, commit=True)
         print("=" * 100)
 
     print("Training completed.")
