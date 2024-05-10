@@ -51,18 +51,20 @@ def get_device():
 
 class ArticleDataset(Dataset):
 
-    def __init__(self, articles, context) -> None:
+    def __init__(self, articles, context, pad_index) -> None:
         """
         Custom dataset to generate the training data for the LLM model.
 
         Args:
             articles (numpy.ndarray) : The articles to generate the training data.
             context (int) : The context size for the model.
+            pad_index (int) : The index for padding.
         """
         super().__init__()
         self.x = articles
         self.ctx = context
-        self.limit = self.x.shape[1] - self.ctx - 1
+        self.limit = self.x.shape[1]
+        self.pad_index = pad_index
 
     def __len__(self):
         """Get the length of the dataset."""
@@ -70,13 +72,24 @@ class ArticleDataset(Dataset):
 
     def __getitem__(self, index):
         """Get the item from the dataset."""
-        if self.limit == 0:
-            x = self.x[index, :-1]
-            y = self.x[index, 1:]
+        # Get number of padding indices
+        data = self.x[index, :]
+        pad_indices, = np.where(data == self.pad_index)
+        if pad_indices.size:
+            first_pad_index = pad_indices[0].item()
         else:
-            init_index = np.random.randint(low=0, high=self.limit, size=1).item()
-            x = self.x[index, init_index: init_index + self.ctx]
-            y = self.x[index, init_index + 1: init_index + self.ctx + 1]
+            first_pad_index = 0
+
+        # Compute the limit for the random index
+        if first_pad_index > self.ctx:
+            limit = first_pad_index - self.ctx
+        else:
+            limit = 1
+        print(limit, first_pad_index, self.ctx)
+        init_index = np.random.randint(low=0, high=limit, size=1).item()
+
+        x = data[init_index:init_index + self.ctx]
+        y = data[init_index + 1:init_index + self.ctx + 1]
 
         t_x = torch.tensor(data=x, requires_grad=False).long()
         t_y = torch.tensor(data=y, requires_grad=False).long()
