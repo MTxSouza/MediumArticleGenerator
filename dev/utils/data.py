@@ -75,8 +75,8 @@ class ArticleDataset(Dataset):
             y = self.x[index, 1:]
         else:
             init_index = np.random.randint(low=0, high=self.limit, size=1).item()
-            x = self.x[index, init_index:self.ctx]
-            y = self.x[index, init_index + 1:self.ctx + 1]
+            x = self.x[index, init_index: init_index + self.ctx]
+            y = self.x[index, init_index + 1: init_index + self.ctx + 1]
 
         t_x = torch.tensor(data=x, requires_grad=False).long()
         t_y = torch.tensor(data=y, requires_grad=False).long()
