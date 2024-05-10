@@ -169,7 +169,7 @@ def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **par
             last_save = curr_iter
             overfitting = 0
             torch.save(obj=model.module.state_dict(), f="./source/weights.pt")
-            run.log_model(path="./source/weights.pt", name="Medium Article Generator")
+            run.log_model(path="./source/weights.pt", name="medium_article_generator_model")
         elif last_train_loss > train_loss and valid_loss > last_valid_loss:
             overfitting += 1
         elif overfitting:
