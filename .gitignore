@@ -17,4 +17,5 @@ venv/
 .venv/
 
 # logs
+wandb/
 *.log
