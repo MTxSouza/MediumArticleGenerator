@@ -4,7 +4,7 @@ This module provides the entire implementation of Medium Article Generator model
 import torch
 import torch.nn as nn
 
-from model.block import DecoderLayer, PositionalEncoding
+from model.block import Decoder, DecoderLayer, PositionalEncoding
 
 
 class ArticleGenerator(nn.Module):
@@ -27,13 +27,15 @@ class ArticleGenerator(nn.Module):
         self.ctx = context
         self.emb = nn.Embedding(num_embeddings=vocab_size, embedding_dim=emb_dim)
         self.pe = PositionalEncoding(context=context, emb_dim=emb_dim)
-        self.layers = nn.Sequential(*[DecoderLayer(
+        self.layers = Decoder(
+            n_layers=n_layers,
+            decoder=DecoderLayer(
                 emb_dim=emb_dim,
                 head_dim=head_dim,
                 context=context,
                 ff_dim=ff_dim,
                 dropout_rate=dropout_rate
-            ) for _ in range(n_layers)]
+            )
         )
         self.norm = nn.LayerNorm(normalized_shape=emb_dim)
         self.out = nn.Linear(in_features=emb_dim, out_features=vocab_size)
