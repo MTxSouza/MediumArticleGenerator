@@ -23,6 +23,7 @@ def _arguments():
   parser.add_argument("--only-utf-8", action="store_true", help="Only consider the UTF-8 characters.")
   parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
   parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
+  parser.add_argument("--no-double-bl", action="store_true", help="Remove double break lines.")
   parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
   return parser.parse_args()
 
@@ -64,6 +65,10 @@ def main():
             if args.only_utf_8:
                 text = remove_non_utf_8(text=text)
             text = remove_links(text=text)
+
+            # Removing double break lines
+            if args.no_double_bl:
+                text = text.replace("\n\n", "\n")
 
             # Skip empty articles
             try:
