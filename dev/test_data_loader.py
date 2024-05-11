@@ -27,6 +27,7 @@ def main():
     vocab = load_json_file('./source/vocab.json')
     mapper = load_json_file('./source/mapper.json')
     tokenizer = Tokenizer(vocab=vocab, lookup_vocab=mapper)
+    print("Vocabulary size: ", len(tokenizer))
 
     # Create the dataset
     dataset = ArticleDataset(articles=tokens)
