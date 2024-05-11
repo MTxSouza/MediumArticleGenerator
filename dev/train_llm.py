@@ -221,10 +221,6 @@ def main():
     train_tokens = tokens[:train_split]
     valid_tokens = tokens[train_split:]
 
-    # checking context size
-    assert train_tokens.shape[0] > args.context_size, "The context size is bigger than the training dataset."
-    assert valid_tokens.shape[0] > args.context_size, "The context size is bigger than the validation dataset."
-
     # creating the dataset
     print("Creating the dataset...")
     train_dataset = ArticleDataset(articles=train_tokens)
