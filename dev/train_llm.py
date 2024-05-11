@@ -201,6 +201,7 @@ def main():
     print("=" * 100)
     print("Loading the tokenized text...")
     tokens = load_numpy_file(filepath="./source/tokens.npz")
+    context_size = tokens.shape[1]
 
     # loading the vocabulary
     print("Loading the vocabulary...")
@@ -226,16 +227,8 @@ def main():
 
     # creating the dataset
     print("Creating the dataset...")
-    train_dataset = ArticleDataset(
-        articles=train_tokens,
-        context=args.context_size,
-        pad_index=tokenizer.pad_index
-    )
-    valid_dataset = ArticleDataset(
-        articles=valid_tokens,
-        context=args.context_size,
-        pad_index=tokenizer.pad_index
-    )
+    train_dataset = ArticleDataset(articles=train_tokens)
+    valid_dataset = ArticleDataset(articles=valid_tokens)
 
     # creating the dataloader
     print("Creating the dataloader...")
@@ -263,7 +256,7 @@ def main():
         n_layers=args.n_layers,
         head_dim=args.d_model // args.n_heads,
         ff_dim=args.d_ff,
-        context=args.context_size,
+        context=context_size,
         dropout_rate=args.dropout,
         tokenizer=tokenizer,
         device=device
