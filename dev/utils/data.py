@@ -3,9 +3,8 @@ Utility functions for data manipulation and processing.
 """
 import re
 
-import numpy as np
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, random_split
 
 # global variables
 _non_utf8_characters_filter = re.compile(pattern=r"[^\x00-\x7F]")
@@ -74,3 +73,26 @@ class ArticleDataset(Dataset):
         t_y = torch.tensor(data=y, requires_grad=False).long()
 
         return t_x, t_y
+
+
+def split_data(data, train_size, seed):
+    """
+    Split the data into training and validation sets.
+
+    Args:
+        data (numpy.ndarray) : The data to split.
+        train_size (float) : The size of the training set.
+        seed (int) : The seed for the random number generator.
+
+    Returns:
+        tuple : The training and validation sets.
+    """
+    # Setting the seed
+    generator = torch.Generator().manual_seed(seed)
+    
+    # Splitting the data
+    train_set, valid_set = random_split(dataset=data, lengths=[train_size, 1 - train_size], generator=generator)
+    train = data[train_set.indices]
+    valid = data[valid_set.indices]
+
+    return train, valid

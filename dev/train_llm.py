@@ -17,7 +17,7 @@ import wandb
 from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 from torch.utils.data import DataLoader
 
-from dev.utils.data import ArticleDataset, get_device
+from dev.utils.data import ArticleDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
 from model.tokenizer import Tokenizer
@@ -38,6 +38,7 @@ def _arguments():
     parser.add_argument("--lr", type=float, default=2e-4, help="Learning rate for training.")
     parser.add_argument("--early-stop", type=int, default=10, help="Number of epochs to wait for early stopping.")
     parser.add_argument("--weight-decay", type=float, default=0.0, help="Weight decay for training.")
+    parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility.")
     return parser.parse_args()
 
 def model_metric(yhat, y, tokenizer):
@@ -216,11 +217,8 @@ def main():
     # preparing dataset
     print("-" * 100)
     print("Splitting the dataset...")
-
     assert args.train_size > 0 and args.train_size < 1, "The train size must be between 0 and 1."
-    train_split = int(tokens.shape[0] * args.train_size)
-    train_tokens = tokens[:train_split]
-    valid_tokens = tokens[train_split:]
+    train_tokens, valid_tokens = split_data(data=tokens, train_size=args.train_size, seed=args.seed)
 
     # creating the dataset
     print("Creating the dataset...")
@@ -262,13 +260,14 @@ def main():
 
     # initializing weights
     print("Initializing the model weights...")
+    generator = torch.Generator().manual_seed(args.seed)
     def init_weights(module: nn.Module):
         if isinstance(module, nn.Linear):
-            nn.init.xavier_normal_(tensor=module.weight)
+            nn.init.xavier_normal_(tensor=module.weight, generator=generator)
             if module.bias is not None:
                 nn.init.zeros_(tensor=module.bias)
         elif isinstance(module, nn.Embedding):
-            nn.init.xavier_normal_(tensor=module.weight)
+            nn.init.xavier_normal_(tensor=module.weight, generator=generator)
     model.apply(fn=init_weights)
     model.to(device=device)
 
