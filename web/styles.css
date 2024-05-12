@@ -2,6 +2,7 @@
     background-color: rgb(240, 240, 240);
 }
 
+
 .frame {
     margin: auto;
     width: 960px;
@@ -9,14 +10,15 @@
     padding-bottom: 50px;
 }
 
+
 .prompt {
     padding-top: 50px;
 }
 
+
 .output {
     margin-top: 50px;
 }
-
 .output p {
     margin: auto;
     width: 80%;
@@ -29,6 +31,7 @@
     white-space: pre-line;
 }
 
+
 .media {
     position: fixed;
     bottom: 0;
@@ -39,13 +42,90 @@
 }
 
 
-img {
+.logo {
     width: 100%;
     padding-top: 50px;
 }
 
 
-input {
+.setting {
+    width: 35px;
+    height: 35px;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1.5px solid rgb(209, 209, 209);
+    transition: all 300ms;
+}
+.setting:hover {
+    border: 1.8px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px -3px rgb(124, 124, 124);
+    transition: all 300ms;
+}
+.setting:active {
+    transform: translateY(2px);
+}
+
+
+.setting svg {
+    fill: rgb(75, 75, 75);
+    transition: all 300ms;
+}
+.setting:hover svg {
+    fill: #000000;
+    transition: all 300ms;
+}
+
+
+.prompt-setting {
+    padding-top: 10px;
+}
+.prompt-setting div {
+    margin: auto;
+    display: flex;
+    width: 70%;
+    height: 80px;
+    background-color: transparent;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    transition: all 300ms;
+}
+.prompt-setting div input, .prompt-setting div label {
+    margin: auto;
+}
+
+
+.slider {
+    border-radius: 5px;
+    background: rgb(209, 209, 209);
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+.slider::-webkit-slider-runnable-track {
+    background: #000000;
+    height: 3px;
+}
+.slider::-webkit-slider-thumb {
+    background-color: #000000;
+    border: #000000;
+}
+.slider::-moz-range-track {
+    background: #000000;
+    height: 3px;
+}
+.slider::-moz-range-thumb {
+    background-color: #000000;
+    border: #000000;
+}
+
+
+.title {
     width: 60%;
     height: 35px;
     padding-left: 20px;
@@ -57,21 +137,19 @@ input {
     font-size: 16px;
     transition: all 100ms;
 }
-
-input:hover {
+.title:hover {
     border: 1.8px solid rgb(0, 0, 0);
     border-radius: 20px;
     box-shadow: 0px 0px 15px -3px rgb(124, 124, 124);
     transition: all 100ms;
 }
-
-input:focus {
+.title:focus {
     border: 1.8px solid rgb(0, 0, 0);
     border-radius: 20px;
 }
 
 
-button {
+.generate {
     width: 10%;
     height: 35px;
     background-color: transparent;
@@ -84,8 +162,7 @@ button {
     text-align: center;
     transition: all 300ms;
 }
-
-button:hover {
+.generate:hover {
     color: #fff;
     background-color: #000000;
     border: 1.5px solid rgb(0, 0, 0);
@@ -93,7 +170,6 @@ button:hover {
     border-radius: 20px;
     transition: all 300ms;
 }
-
-button:active {
+.generate:active {
     transform: translateY(2px);
 }
