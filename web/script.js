@@ -39,7 +39,47 @@ async function request_article() {
 
     // Send a request to the server
     try {
-        const response = await fetch(`http://0.0.0.0:8000/generate?text=${title}`);
+        const response = await fetch("http://0.0.0.0:8000/generate", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json; charset=utf-8"
+            },
+            body: JSON.stringify({
+                text : title,
+                extra_tokens : 50,
+                max_length : 80
+            }),
+        });
+
+        // Check if the request was successful
+        if (response.status == 400) {
+            const error = await response.json();
+            show_error_message(response.detail, error.detail);
+            return;
+        }
+
+        // Get element to display the generation
+        const genDiv = document.getElementById("generation");
+        const genText = document.createElement("p");
+
+        // Clear the generation div
+        if (genDiv.childElementCount > 0) {
+            genDiv.removeChild(genDiv.firstChild);
+        }
+        genDiv.appendChild(genText);
+
+        // Get the response from the server
+        const reader = response.body.getReader();
+        let done, value;
+        while (!done) {
+            ({done, value} = await reader.read());
+            if (done) {
+                break;
+            } else {
+                const text = new TextDecoder("utf-8").decode(value);
+                genText.textContent = genText.innerText + text;
+            }
+        }
     } catch (error) {
         if (error instanceof TypeError) {
             show_error_message(error, "Could not connect to the server");
@@ -52,17 +92,4 @@ async function request_article() {
         button.disabled = false;
         input.disabled = false;
     }
-
-    // Check if the request was successful
-    if (!response.ok) {
-        const error = await response.text();
-        show_error_message(error, "Failed to fetch data");
-        return;
-    }
-
-    // Get the response from the server
-    const result = await response.text();
-
-    // Display the response
-    document.getElementById("output").textContent = result;
 }
