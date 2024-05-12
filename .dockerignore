@@ -1,8 +1,6 @@
-__pycache__/
+*cache/
 *.md
 *.log
-*.json
-*.npz
 env/
 .env/
 venv/

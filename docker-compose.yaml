@@ -3,7 +3,7 @@ services:
     container_name: medium_article_generator_train
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     deploy:
       resources:
         reservations:
@@ -13,3 +13,18 @@ services:
               capabilities: [gpu]
     stdin_open: true
     tty: true
+
+  api:
+    container_name: medium_article_generator_api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
