@@ -19,7 +19,7 @@ function show_error_message(error, message) {
     errorBox.textContent = `Error: ${message}`;
 
     // Add the error box to the generation div
-    genDiv.appendChild(errorBox);
+    genDiv.insertAdjacentElement("afterbegin", errorBox);
 
     // Remove the error box after 3 seconds
     setTimeout(() => {
