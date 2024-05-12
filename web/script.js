@@ -31,6 +31,12 @@ function show_error_message(error, message) {
 async function request_article() {
     var title = get_input_text();
 
+    // Disable the button and input field
+    button = document.getElementById("generate");
+    button.disabled = true;
+    input = document.getElementById("title");
+    input.disabled = true;
+
     // Send a request to the server
     try {
         const response = await fetch(`http://0.0.0.0:8000/generate?text=${title}`);
@@ -41,6 +47,10 @@ async function request_article() {
             show_error_message(error, "Internal server error");
         }
         return;
+    } finally {
+        // Enable the button and input field
+        button.disabled = false;
+        input.disabled = false;
     }
 
     // Check if the request was successful
