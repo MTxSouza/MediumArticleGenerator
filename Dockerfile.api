@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 WORKDIR /home
 # copy requirements file
 COPY model/requirements.txt model_requirements.txt
-COPY api/requirements.txt api_requirements.txt
+COPY app/requirements.txt api_requirements.txt
 # install requirements
 RUN pip install -r model_requirements.txt
 RUN pip install -r api_requirements.txt
