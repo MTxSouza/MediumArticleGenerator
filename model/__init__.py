@@ -1,10 +1,13 @@
 """
 This module provides the entire implementation of Medium Article Generator model.
 """
+import re
+
 import torch
 import torch.nn as nn
 
 from model.block import Decoder, DecoderLayer, PositionalEncoding
+from model.tokenizer import TikTokenizer
 
 
 class ArticleGenerator(nn.Module):
@@ -72,29 +75,40 @@ class ArticleGenerator(nn.Module):
         token = x.argmax(dim=-1)[:,-1]
         return token
 
-    def generate(self, text = "<|sos|>", max_len = None):
+    def generate(self, text, extra_tokens = 50, max_len = None):
         """
         Generate text based on the input text.
+
         Args:
-            text (str) : The input text. (default: "<|sos|>")
-            max_len (int) : The maximum length of the generated text. (default: None)
-        Output:
+            text (str) : The input text.
+            extra_tokens (int) : The number of extra tokens to generate when exceeding the context size. (default: 50)
+            max_len (int) : The maximum number of the tokens to be generated. (default: None)
+
+        Returns:
             Generator[str, None, None] : The generated text.
         """
-        max_len = float("inf") if max_len is None else max_len
-        count = 0
+        # Adding initial tags to the input text
+        tagged_text = TikTokenizer.SOT + \
+                    text + \
+                    TikTokenizer.EOT + \
+                    TikTokenizer.SOA
+
+        # Stop token
+        end_of_article = self.tokenizer._special_tokens.get("<|eoa|>")
+
         x = torch.tensor(
-            data=self.tokenizer.encode(text=text),
+            data=self.tokenizer.encode(text=tagged_text),
             requires_grad=False
         ).unsqueeze(dim=0).to(device=self.dev)
+        n_tokens = x.size(dim=1) # Total number of tokens
         assert x.ndim == 2
         yield text
-        while count < max_len:
+        while n_tokens < max_len and n_tokens < self.ctx + extra_tokens:
             if x.size(dim=1) > self.ctx:
                 x = x[:,1:] # ignoring first token of window context
             token = self.predict_next_token(x)
-            if token.item() == self.tokenizer.eos: # end of sentence
+            if token.item() == end_of_article: # end of sentence
                 break
             yield self.tokenizer.decode(tokens=[token.item()])
             x = torch.cat(tensors=[x, token.unsqueeze(dim=0)], dim=1)
-            count += 1
+            n_tokens += 1
