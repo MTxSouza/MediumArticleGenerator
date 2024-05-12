@@ -43,12 +43,13 @@ def _arguments():
 def model_metric(yhat, y, tokenizer):
     """
     Model metric for the LLM model.
-    ---
-    Params:
+
+    Args:
         - yhat (torch.Tensor) : The predicted values.
         - y (torch.Tensor) : The true values.
         - tokenizer (Tokenizer) : The tokenizer for the model.
-    Output:
+
+    Returns:
         - tuple[torch.Tensor, float] : The loss and the accuracy.
     """
     batch_size, ctx, _ = yhat.size()
@@ -71,8 +72,8 @@ def model_metric(yhat, y, tokenizer):
 def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **params):
     """
     Train the LLM model.
-    ---
-    Params:
+
+    Args:
         - model (nn.Module) : The LLM model.
         - train_loader (DataLoader) : The training dataloader.
         - valid_loader (DataLoader) : The validation dataloader.
