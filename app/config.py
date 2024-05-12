@@ -9,7 +9,7 @@ import torch
 
 from app.logger import INTERNAL_ERROR_MSG, logger
 from model import ArticleGenerator
-from model.blocks.tokenizer import Tokenizer
+from model.tokenizer import Tokenizer
 
 logger.info(msg="Initializing API.")
 
