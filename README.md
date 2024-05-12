@@ -1,4 +1,4 @@
-<img src="docs/Medium_Article_Generator.png" height="100px">
+<img src="docs/Medium_Article_Generator.png" height="200px">
 
 ---
 LLM trained to generate Medium articles text like. 
