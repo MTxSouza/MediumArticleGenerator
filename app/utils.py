@@ -19,10 +19,12 @@ def check_prompt(prompt: Prompt):
     max_len = prompt.max_length
 
     # Checking parameters
-    _text = re.sub(r"\s+", " ", text).strip() # Removing extra spaces
+    _text = re.sub(pattern=r"\s+", repl=" ", string=text).strip() # Removing extra spaces
     if not _text:
         raise ValueError("The input text should not be empty.")
-    elif not re.match(r"[\w ]{8,30}", _text):
+    elif re.match(pattern=r"[^\w ]+", string=_text):
+        raise ValueError("The input text should contain only letters, digits, and spaces.")
+    elif not re.match(pattern=r"[\w ]{8,30}", string=_text):
         raise ValueError("The input text should contain at least 8 characters and at most 30.")
 
     if extra_tokens < 50 or extra_tokens > 100:
