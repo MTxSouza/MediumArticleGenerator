@@ -102,7 +102,6 @@ class ArticleGenerator(nn.Module):
         ).unsqueeze(dim=0).to(device=self.dev)
         n_tokens = x.size(dim=1) # Total number of tokens
         assert x.ndim == 2
-        yield text
         while n_tokens < max_len and n_tokens < self.ctx + extra_tokens:
             if x.size(dim=1) > self.ctx:
                 x = x[:,1:] # ignoring first token of window context
