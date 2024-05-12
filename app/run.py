@@ -3,6 +3,7 @@ Main module that runs the API of Medium Article Generator model.
 """
 from fastapi import FastAPI, status
 from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, StreamingResponse
 
 from app.config import logger, model, params
@@ -10,6 +11,15 @@ from app.schema import Prompt
 from app.utils import check_prompt
 
 app = FastAPI()
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 @app.get(path="/", status_code=status.HTTP_308_PERMANENT_REDIRECT)
