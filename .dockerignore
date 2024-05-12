@@ -1,0 +1,10 @@
+__pycache__/
+*.md
+*.log
+*.json
+*.npz
+env/
+.env/
+venv/
+.venv/
+*.csv

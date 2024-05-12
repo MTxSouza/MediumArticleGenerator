@@ -1,9 +1,2 @@
-# training
-ipykernel==6.29.4
-matplotlib==3.8.4
-nltk==3.8.1
-tqdm==4.66.2
-
-# model
 torch==2.3.0
 tiktoken==0.6.0

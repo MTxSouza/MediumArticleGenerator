@@ -6,6 +6,7 @@ __pycache__/
 *.json
 
 # training
+*.npz
 *.csv
 exp/
 
@@ -16,4 +17,5 @@ venv/
 .venv/
 
 # logs
+wandb/
 *.log
