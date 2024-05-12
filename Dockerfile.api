@@ -13,4 +13,4 @@ RUN pip install -r api_requirements.txt
 # copy project
 COPY . .
 # run server
-CMD ["PYTHONPATH=./", "python3", "uvicorn", "api.run:app", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["uvicorn", "app.run:app", "--port", "8000", "--host", "0.0.0.0"]
