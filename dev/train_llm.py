@@ -65,7 +65,7 @@ def model_metric(yhat, y, tokenizer):
     mask = (y != tokenizer.pad_index).view(-1).float()  # True for non-pad tokens
 
     # Compute equality
-    eq = (base_y == base_yhat.argmax(dim=-1)).float()
+    eq = (base_y == yhat.argmax(dim=-1).view(-1)).float()
 
     # Apply mask
     eq = eq * mask
