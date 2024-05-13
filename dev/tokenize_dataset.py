@@ -25,6 +25,7 @@ def _arguments():
   parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
   parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
   parser.add_argument("--vocab-size", type=int, default=0, help="Vocabulary size for the tokenizer.")
+  parser.add_argument("--n-unk-allowed", type=int, default=10, help="Unknown tokens allowed in the article.")
   parser.add_argument("--no-double-bl", action="store_true", help="Remove double break lines.")
   parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
   return parser.parse_args()
@@ -108,13 +109,12 @@ def main():
                 elif article_length < shortest_article:
                     shortest_article = article_length
 
-                # Saving into vocabulary
-                for token in list(set(Tokenizer.get_str_tokens(text=title + "\n" + article))):
-                    custom_vocab[token] = custom_vocab.get(token, len(custom_vocab))
-
-                # Break if the vocabulary size is reached
-                if len(custom_vocab) >= vocab_size:
-                    break
+                # Checking if the vocabulary size is reached
+                unique_tokens = list(set(Tokenizer.get_str_tokens(text=title + "\n" + article)))
+                if len(custom_vocab) < vocab_size:
+                    # Saving into vocabulary
+                    for token in unique_tokens:
+                        custom_vocab[token] = custom_vocab.get(token, len(custom_vocab))
 
         print(f"Patterner used: {Tokenizer.pattern_}")
         print(f"Number of articles: {len(tokens)}")
@@ -128,14 +128,22 @@ def main():
         custom_vocab[token] = custom_vocab.get(token, len(custom_vocab))
         print(f"\t- Adding token: {token} -> {custom_vocab[token]}")
     print(f"New vocabulary size: {len(custom_vocab)}")
+    unk_index = custom_vocab.get(Tokenizer.UNK)
+
+    # Removing articles with unknown tokens
+    clean_tokens = []
+    for token_seq in tqdm.tqdm(iterable=tokens, desc="Removing articles with unknown tokens..."):
+        n_unknown = sum(1 for token in token_seq if token not in custom_vocab)
+        if n_unknown < args.n_unk_allowed:
+            clean_tokens.append(token_seq)
+    print(f"Number of articles after cleaning: {len(clean_tokens)}")
 
     # Convert tokens into integers
-    # print("Converting tokens into integers...")
     indices = []
-    for token_seq in tqdm.tqdm(iterable=tokens, desc="Converting tokens into integers..."):
+    for token_seq in tqdm.tqdm(iterable=clean_tokens, desc="Converting tokens into integers..."):
         indices.append([])
         for token in token_seq:
-            indices[-1].append(custom_vocab[token])
+            indices[-1].append(custom_vocab.get(token, unk_index))
 
     # Padding the tokens to the same length
     for token_seq in tqdm.tqdm(iterable=indices, desc=f"Padding the tokens to {longest_article} tokens..."):
