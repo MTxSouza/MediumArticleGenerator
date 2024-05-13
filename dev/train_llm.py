@@ -61,10 +61,8 @@ def model_metric(yhat, y, tokenizer):
     loss = F.cross_entropy(input=base_yhat, target=base_y, ignore_index=tokenizer.pad_index)
 
     pred = yhat.argmax(dim=-1)
-    pred_tokens = [tokenizer.get_str_tokens(text=tokenizer.decode(indices=tokens)) for tokens in pred.tolist()]
-    true_tokens = [tokenizer.get_str_tokens(text=tokenizer.decode(indices=tokens)) for tokens in y.tolist()]
+    accuracies = (yhat == pred).sum() / (batch_size * ctx)
 
-    accuracies = [sentence_bleu(references=[true], hypothesis=pred, smoothing_function=SmoothingFunction().method1) for pred, true in zip(pred_tokens, true_tokens)]
     acc = sum(accuracies) / batch_size
 
     return loss, acc
