@@ -48,6 +48,16 @@ class Tokenizer:
         """
         return len(self.encode_vocab)
 
+    @property
+    def pad_index(self):
+        """
+        Get the index of padding token.
+
+        Returns:
+            int : The index of padding token.
+        """
+        return self.encode_vocab.get(self.PAD)
+
     def encode(self, text):
         """
         Tokenize the input text into a list of tokens.
