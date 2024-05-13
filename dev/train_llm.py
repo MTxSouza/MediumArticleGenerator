@@ -260,7 +260,7 @@ def main():
 
     # initializing weights
     print("Initializing the model weights...")
-    generator = torch.Generator().manual_seed(args.seed)
+    generator = torch.Generator(device=device).manual_seed(args.seed)
     def init_weights(module: nn.Module):
         if isinstance(module, nn.Linear):
             nn.init.xavier_normal_(tensor=module.weight, generator=generator)
