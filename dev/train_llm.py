@@ -208,11 +208,10 @@ def main():
     # loading the vocabulary
     print("Loading the vocabulary...")
     vocab = load_json_file(filepath="./source/vocab.json")
-    mapper = load_json_file(filepath="./source/mapper.json")
 
     # loading Tokenizer
     print("Loading the Tokenizer...")
-    tokenizer = Tokenizer(vocab=vocab, lookup_vocab=mapper)
+    tokenizer = Tokenizer(vocab=vocab)
 
     # preparing dataset
     print("-" * 100)
