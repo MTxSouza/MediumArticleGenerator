@@ -35,8 +35,10 @@ def main():
     # Get the first data
     try:
         iter_dataset = iter(dataset)
+        n_iter = 0
         while True:
             print("-" * 100)
+            print(f"Iteration: {n_iter}")
             _ = input("Press any keyboard to get the next data.")
             clear_terminal()
             x, y = next(iter_dataset)
@@ -51,6 +53,7 @@ def main():
             print("\tInput:\n", tokenizer.decode(x.numpy().tolist()))
             print("\n")
             print("\tOutput:\n", tokenizer.decode(y.numpy().tolist()))
+            n_iter += 1
     except KeyboardInterrupt:
         print("The data loader is stopped.")
 
