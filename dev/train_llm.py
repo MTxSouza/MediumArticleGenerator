@@ -13,9 +13,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
-import wandb
 from torch.utils.data import DataLoader
 
+import wandb
 from dev.utils.data import ArticleDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
@@ -54,15 +54,22 @@ def model_metric(yhat, y, tokenizer):
     """
     batch_size, ctx, _ = yhat.size()
 
+    # Flatten predictions and targets
     base_yhat = yhat.view(batch_size * ctx, -1)
     base_y = y.view(-1)
 
+    # Calculate loss (no change)
     loss = F.cross_entropy(input=base_yhat, target=base_y, ignore_index=tokenizer.pad_index)
 
-    pred = yhat.argmax(dim=-1)
-    accuracies = (yhat == pred).sum() / (batch_size * ctx)
+    # Get mask for non-pad tokens
+    mask = (y != tokenizer.pad_index).view(-1).float()  # True for non-pad tokens
 
-    acc = sum(accuracies) / batch_size
+    # Compute equality
+    eq = (base_y == base_yhat.argmax(dim=-1)).float()
+
+    # Apply mask
+    eq = eq * mask
+    acc = eq.sum().item() / mask.sum().item()
 
     return loss, acc
 
