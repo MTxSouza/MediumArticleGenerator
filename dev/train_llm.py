@@ -14,7 +14,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
 import wandb
-from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 from torch.utils.data import DataLoader
 
 from dev.utils.data import ArticleDataset, get_device, split_data
