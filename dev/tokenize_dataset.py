@@ -24,6 +24,7 @@ def _arguments():
   parser.add_argument("--lower", action="store_true", help="Convert text to lower case.")
   parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
   parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
+  parser.add_argument("--vocab-size", type=int, default=0, help="Vocabulary size for the tokenizer.")
   parser.add_argument("--no-double-bl", action="store_true", help="Remove double break lines.")
   parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
   return parser.parse_args()
@@ -38,6 +39,7 @@ def main():
     custom_vocab = {}
     longest_article = 0
     shortest_article = float("inf")
+    vocab_size = args.vocab_size if args.vocab_size > 0 else float("inf")
 
     # Open the CSV file
     with open(file=args.file, mode="r", encoding="utf-8") as csvfile:
@@ -109,6 +111,10 @@ def main():
                 # Saving into vocabulary
                 for token in list(set(Tokenizer.get_str_tokens(text=title + "\n" + article))):
                     custom_vocab[token] = custom_vocab.get(token, len(custom_vocab))
+
+                # Break if the vocabulary size is reached
+                if len(custom_vocab) >= vocab_size:
+                    break
 
         print(f"Patterner used: {Tokenizer.pattern_}")
         print(f"Number of articles: {len(tokens)}")
