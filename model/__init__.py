@@ -7,7 +7,8 @@ import torch
 import torch.nn as nn
 
 from model.block import Decoder, DecoderLayer, PositionalEncoding
-from model.tokenizer import TikTokenizer
+# from model.tokenizer import TikTokenizer
+from model.tokenizer import Tokenizer
 
 
 class ArticleGenerator(nn.Module):
@@ -88,10 +89,10 @@ class ArticleGenerator(nn.Module):
             Generator[str, None, None] : The generated text.
         """
         # Adding initial tags to the input text
-        tagged_text = TikTokenizer.SOT + \
+        tagged_text = Tokenizer.SOT + \
                     text + \
-                    TikTokenizer.EOT + \
-                    TikTokenizer.SOA
+                    Tokenizer.EOT + \
+                    Tokenizer.SOA
 
         # Stop token
         end_of_article = self.tokenizer._special_tokens.get("<|eoa|>")
