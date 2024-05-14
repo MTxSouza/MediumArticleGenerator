@@ -13,9 +13,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
+import wandb
 from torch.utils.data import DataLoader
 
-import wandb
 from dev.utils.data import ArticleDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
@@ -107,7 +107,6 @@ def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **par
     print("=" * 100)
     run = wandb.init(project="Medium Article Generator", config=params)
     run.log_artifact("./source/vocab.json")
-    run.log_artifact("./source/mapper.json")
 
     # training loop
     print("=" * 100)
