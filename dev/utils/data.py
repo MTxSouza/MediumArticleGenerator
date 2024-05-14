@@ -3,6 +3,7 @@ Utility functions for data manipulation and processing.
 """
 import re
 
+import numpy as np
 import torch
 from torch.utils.data import Dataset, random_split
 
@@ -89,6 +90,7 @@ class ChunkDataset(Dataset):
         self.ctx_len = kwargs.get("context_size")
         assert self.ctx_len < self.x.shape[1], "Context size must be less than the article length."
 
+        self.pad_idx = kwargs.get("pad_index")
         self.limit = self.x.shape[1] - self.ctx_len - 1
     
     def __len__(self):
@@ -97,10 +99,14 @@ class ChunkDataset(Dataset):
 
     def __getitem__(self, index):
         """Get the item from the dataset."""
-        start = torch.randint(low=0, high=self.limit, size=(1,)).item()
+        # Ignoring the padding index
+        chunk = self.x[index]
+        limit = (chunk == self.pad_idx).argmax() - self.ctx_len
 
-        x = self.x[index, start:start + self.ctx_len]
-        y = self.x[index, start + 1:start + self.ctx_len + 1]
+        start = torch.randint(low=0, high=limit, size=(1,)).item()
+
+        x = chunk[start:start + self.ctx_len]
+        y = chunk[start + 1:start + self.ctx_len + 1]
 
         t_x = torch.tensor(data=x, requires_grad=False).long()
         t_y = torch.tensor(data=y, requires_grad=False).long()
