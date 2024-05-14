@@ -16,7 +16,7 @@ import tqdm
 import wandb
 from torch.utils.data import DataLoader
 
-from dev.utils.data import ArticleDataset, get_device, split_data
+from dev.utils.data import ChunkDataset, FullDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
 from model.tokenizer import Tokenizer
@@ -29,7 +29,7 @@ def _arguments():
     parser.add_argument("--n-heads", type=int, default=8, help="Number of heads for the model.")
     parser.add_argument("--d-ff", type=int, default=1024, help="Feed-forward dimension for the model.")
     parser.add_argument("--d-model", type=int, default=256, help="Embedding dimension.")
-    parser.add_argument("--context-size", type=int, default=128, help="Context size for the model.")
+    parser.add_argument("--context-size", type=int, default=0, help="Context size for the model.")
     parser.add_argument("--dropout", type=float, default=0.1, help="Dropout rate for the model.")
     parser.add_argument("--train-size", type=float, default=0.8, help="Percentage of the dataset to use for training.")
     parser.add_argument("--epochs", type=int, default=1000, help="Number of epochs for training.")
@@ -224,8 +224,14 @@ def main():
 
     # creating the dataset
     print("Creating the dataset...")
-    train_dataset = ArticleDataset(articles=train_tokens)
-    valid_dataset = ArticleDataset(articles=valid_tokens)
+    if args.context_size > 0:
+        print(f"\tCreating the dataset with context size {args.context_size}...")
+        train_dataset = ChunkDataset(article=train_tokens, context_size=args.context_size)
+        valid_dataset = ChunkDataset(article=valid_tokens, context_size=args.context_size)
+    else:
+        print("\tCreating the full dataset...")
+        train_dataset = FullDataset(articles=train_tokens)
+        valid_dataset = FullDataset(articles=valid_tokens)
 
     # creating the dataloader
     print("Creating the dataloader...")
