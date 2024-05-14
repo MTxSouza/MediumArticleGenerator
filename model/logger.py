@@ -7,7 +7,7 @@ import os
 
 class Logger(logging.Logger):
 
-    log_dirpath = "./logs"
+    log_dirpath = "./model/logs"
     if not os.path.exists(path=log_dirpath):
         os.mkdir(path=log_dirpath)
 
