@@ -30,12 +30,10 @@ weights_filepath = os.path.join(source_folder_path, "weights.pt")
 logger.debug(msg=f"Absolute path of weights file : {weights_filepath}.")
 vocab_filepath = os.path.join(source_folder_path, "vocab.json")
 logger.debug(msg=f"Absolute path of params file : {vocab_filepath}.")
-mapper_filepath = os.path.join(source_folder_path, "mapper.json")
-logger.debug(msg=f"Absolute path of params file : {mapper_filepath}.")
 params_filepath = os.path.join(source_folder_path, "params.json")
 logger.debug(msg=f"Absolute path of params file : {params_filepath}.")
 
-for filepath in (weights_filepath, vocab_filepath, mapper_filepath, params_filepath):
+for filepath in (weights_filepath, vocab_filepath, params_filepath):
     if not os.path.exists(path=filepath):
         filename = filepath.split(sep=os.sep)[-1]
         logger.error(msg=f"API could not find the `{filename}` file in `source` directory.")
@@ -56,15 +54,7 @@ except Exception as error:
     sys.exit()
 
 try:
-    with open(file=mapper_filepath, mode="r", encoding="utf-8") as json_buffer:
-        mapper = json.load(fp=json_buffer)
-except Exception as error:
-    print(INTERNAL_ERROR_MSG)
-    logger.critical(msg=str(error))
-    sys.exit()
-
-try:
-    tokenizer = Tokenizer(vocab=vocab, lookup_vocab=mapper)
+    tokenizer = Tokenizer(vocab=vocab)
 except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
