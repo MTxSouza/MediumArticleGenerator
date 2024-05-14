@@ -97,7 +97,7 @@ class ChunkDataset(Dataset):
 
     def __getitem__(self, index):
         """Get the item from the dataset."""
-        start = torch.randint(low=0, high=self.limit, size=1).item()
+        start = torch.randint(low=0, high=self.limit, size=(1,)).item()
 
         x = self.x[index, start:start + self.ctx_len]
         y = self.x[index, start + 1:start + self.ctx_len + 1]
