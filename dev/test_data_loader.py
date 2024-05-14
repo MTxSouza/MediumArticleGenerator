@@ -44,7 +44,7 @@ def main():
     # Create the dataset
     if args.context_size > 0:
         print("Creating ChunkDataset...")
-        dataset = ChunkDataset(article=tokens, context_size=args.context_size)
+        dataset = ChunkDataset(article=tokens, context_size=args.context_size, pad_index=tokenizer.pad_index)
     else:
         print("Creating FullDataset...")
         dataset = FullDataset(articles=tokens)
