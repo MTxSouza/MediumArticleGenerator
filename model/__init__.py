@@ -95,7 +95,7 @@ class ArticleGenerator(nn.Module):
                     Tokenizer.SOA
 
         # Stop token
-        end_of_article = self.tokenizer._special_tokens.get("<|eoa|>")
+        end_of_article = self.tokenizer.encode_vocab.get("<|eoa|>")
 
         x = torch.tensor(
             data=self.tokenizer.encode(text=tagged_text),
@@ -109,6 +109,6 @@ class ArticleGenerator(nn.Module):
             token = self.predict_next_token(x)
             if token.item() == end_of_article: # end of sentence
                 break
-            yield self.tokenizer.decode(tokens=[token.item()])
+            yield self.tokenizer.decode(indices=[token.item()])
             x = torch.cat(tensors=[x, token.unsqueeze(dim=0)], dim=1)
             n_tokens += 1
