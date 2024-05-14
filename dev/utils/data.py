@@ -48,11 +48,11 @@ def get_device():
     return torch.device(device="cuda" if torch.cuda.is_available() else "cpu")
 
 
-class ArticleDataset(Dataset):
+class FullDataset(Dataset):
 
-    def __init__(self, articles) -> None:
+    def __init__(self, articles, **kwargs):
         """
-        Custom dataset to generate the training data for the LLM model.
+        Custom dataset to generate full data for the LLM model.
 
         Args:
             articles (numpy.ndarray) : The articles to generate the training data.
@@ -68,6 +68,39 @@ class ArticleDataset(Dataset):
         """Get the item from the dataset."""
         x = self.x[index, :-1]
         y = self.x[index, 1:]
+
+        t_x = torch.tensor(data=x, requires_grad=False).long()
+        t_y = torch.tensor(data=y, requires_grad=False).long()
+
+        return t_x, t_y
+
+
+class ChunkDataset(Dataset):
+
+    def __init__(self, article, **kwargs):
+        """
+        Custom dataset to generate chunk data for the LLM model.
+
+        Args:
+            article (numpy.ndarray) : The article to generate the chunk data.
+        """
+        super().__init__()
+        self.x = article
+        self.ctx_len = kwargs.get("context_size")
+        assert self.ctx_len < self.x.shape[1], "Context size must be less than the article length."
+
+        self.limit = self.x.shape[1] - self.ctx_len - 1
+    
+    def __len__(self):
+        """Get the length of the dataset."""
+        return self.x.shape[0]
+
+    def __getitem__(self, index):
+        """Get the item from the dataset."""
+        start = torch.randint(low=0, high=self.limit, size=1).item()
+
+        x = self.x[index, start:start + self.ctx_len]
+        y = self.x[index, start + 1:start + self.ctx_len + 1]
 
         t_x = torch.tensor(data=x, requires_grad=False).long()
         t_y = torch.tensor(data=y, requires_grad=False).long()
