@@ -91,7 +91,6 @@ class ChunkDataset(Dataset):
         assert self.ctx_len < self.x.shape[1], "Context size must be less than the article length."
 
         self.pad_idx = kwargs.get("pad_index")
-        self.limit = self.x.shape[1] - self.ctx_len - 1
     
     def __len__(self):
         """Get the length of the dataset."""
@@ -102,6 +101,8 @@ class ChunkDataset(Dataset):
         # Ignoring the padding index
         chunk = self.x[index]
         limit = (chunk == self.pad_idx).argmax() - self.ctx_len
+        if limit < 0:
+            limit = 1
 
         start = torch.randint(low=0, high=limit, size=(1,)).item()
 
