@@ -18,6 +18,9 @@ def check_prompt(prompt: Prompt):
     extra_tokens = prompt.extra_tokens
     max_len = prompt.max_length
 
+    # Converting text to lowercase
+    text = text.lower()
+
     # Checking parameters
     _text = re.sub(pattern=r"\s+", repl=" ", string=text).strip() # Removing extra spaces
     if not _text:
