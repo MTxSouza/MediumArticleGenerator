@@ -21,6 +21,7 @@ def _arguments():
   parser = argparse.ArgumentParser(description="Tokenize the text dataset for training the model.")
   parser.add_argument("--file", type=str, required=True, help="Path to the input CSV file.")
   parser.add_argument("--only-utf-8", action="store_true", help="Only consider the UTF-8 characters.")
+  parser.add_argument("--ignore-char", nargs="+", type=str, default="", help="Ignore a specific character.")
   parser.add_argument("--lower", action="store_true", help="Convert text to lower case.")
   parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
   parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
@@ -75,6 +76,11 @@ def main():
             # Convert text to lower case
             if args.lower:
                 text = text.lower()
+
+            # Ignore a specific character
+            for char in args.ignore_char:
+                if char in text:
+                    continue
 
             # Skip empty articles
             try:
