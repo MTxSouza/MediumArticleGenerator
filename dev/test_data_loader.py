@@ -1,11 +1,21 @@
 """
 Main script for testing the data loader and see the output token.
 """
+import argparse
 import os
 
-from dev.utils.data import ArticleDataset
+from dev.utils.data import ChunkDataset, FullDataset
 from dev.utils.file import load_json_file, load_numpy_file
 from model.tokenizer import Tokenizer
+
+
+def _arguments():
+    """
+    Parse the arguments from command line.
+    """
+    parser = argparse.ArgumentParser(description="Test the data loader for the model.")
+    parser.add_argument("--context-size", type=int, default=0, help="Context size for the chunk dataset.")
+    return parser.parse_args()
 
 
 def clear_terminal():
@@ -19,6 +29,9 @@ def main():
     """
     Main function to test the data loader.
     """
+    # Parse the arguments
+    args = _arguments()
+
     # Load tokens
     tokens = load_numpy_file('./source/tokens.npz')
     print("Tokens shape: ", tokens.shape)
@@ -29,7 +42,12 @@ def main():
     print("Vocabulary size: ", len(tokenizer))
 
     # Create the dataset
-    dataset = ArticleDataset(articles=tokens)
+    if args.context_size > 0:
+        print("Creating ChunkDataset...")
+        dataset = ChunkDataset(article=tokens, context_size=args.context_size)
+    else:
+        print("Creating FullDataset...")
+        dataset = FullDataset(articles=tokens)
     print("Dataset size: ", len(dataset))
 
     # Get the first data
