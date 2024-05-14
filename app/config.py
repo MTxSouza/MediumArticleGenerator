@@ -37,7 +37,7 @@ logger.debug(msg=f"Absolute path of params file : {params_filepath}.")
 
 for filepath in (weights_filepath, vocab_filepath, mapper_filepath, params_filepath):
     if not os.path.exists(path=filepath):
-        filename = filepath.split(sep=os.sep)[:-1]
+        filename = filepath.split(sep=os.sep)[-1]
         logger.error(msg=f"API could not find the `{filename}` file in `source` directory.")
         sys.exit()
 
