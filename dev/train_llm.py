@@ -37,7 +37,7 @@ def _arguments():
     parser.add_argument("--lr", type=float, default=2e-4, help="Learning rate for training.")
     parser.add_argument("--early-stop", type=int, default=10, help="Number of epochs to wait for early stopping.")
     parser.add_argument("--weight-decay", type=float, default=0.0, help="Weight decay for training.")
-    parser.add_argument("--tokenizer", type=str, default=None, help="Tokenizer for the model.")
+    parser.add_argument("--tokenizer-model", type=str, default=None, help="Tokenizer for the model.")
     parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility.")
     return parser.parse_args()
 
@@ -209,7 +209,7 @@ def main():
     tokens = load_numpy_file(filepath="./source/tokens.npz")
 
     # loading the vocabulary
-    if args.tokenizer == "bert":
+    if args.tokenizer_model == "bert":
         # loading Bert Tokenizer
         print("Loading the Bert Tokenizer...")
         tokenizer = BertTokenizer()
