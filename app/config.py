@@ -52,6 +52,7 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg=f"Vocab has been loaded successfully. Vocab size : {len(vocab)}.")
 
 try:
     tokenizer = Tokenizer(vocab=vocab)
@@ -59,6 +60,7 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg="Tokenizer has been initialized successfully.")
 
 # ===================== Model =====================
 try:
@@ -68,6 +70,7 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg="Params have been loaded successfully.")
 
 try:
     model = ArticleGenerator(**params, vocab_size=len(tokenizer), device=device, tokenizer=tokenizer)
@@ -76,6 +79,7 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg="Model has been initialized successfully.")
 
 # ===================== Weights =====================
 try:
@@ -84,6 +88,7 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg="Weights have been loaded successfully.")
 
 try:
     model.load_state_dict(state_dict=weights)
@@ -91,5 +96,6 @@ except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
     sys.exit()
+logger.debug(msg="Weights have been loaded into model successfully.")
 
 logger.info(msg="API ready for use.")
