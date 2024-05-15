@@ -170,4 +170,4 @@ class BertTokenizer:
         Returns:
             str : The output text.
         """
-        return self.tokenizer.decode(ids=indices, skip_special_tokens=False)
+        return self.tokenizer.decode(token_ids=indices, skip_special_tokens=False)
