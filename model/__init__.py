@@ -1,13 +1,10 @@
 """
 This module provides the entire implementation of Medium Article Generator model.
 """
-import re
-
 import torch
 import torch.nn as nn
 
 from model.block import Decoder, DecoderLayer, PositionalEncoding
-# from model.tokenizer import TikTokenizer
 from model.tokenizer import Tokenizer
 
 
