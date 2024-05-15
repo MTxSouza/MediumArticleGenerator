@@ -7,6 +7,7 @@ For more information use --help command.
 """
 import argparse
 import csv
+import re
 
 import numpy as np
 import tqdm
@@ -70,7 +71,7 @@ def main():
 
             # Removing double break lines
             if args.no_double_bl:
-                text = text.replace("\n\n", "\n")
+                text = re.sub(pattern="\n\n+", repl="\n", string=text)
 
             # Convert text to lower case
             if args.lower:
@@ -92,11 +93,8 @@ def main():
             if not article or not title:
                 continue
 
-            # Adding special tokens to the text
-            text = title + " " + article
-
             # Tokenize the text
-            sample = BertTokenizer.SOT + title + "~" + article + BertTokenizer.EOA
+            sample = BertTokenizer.SOT + title + "\n\n" + article + BertTokenizer.EOA
             article_tokens = BertTokenizer.get_str_tokens(text=sample)
 
             # Filter articles based on length
