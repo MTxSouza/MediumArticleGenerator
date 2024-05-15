@@ -117,6 +117,7 @@ class BertEmbedding(nn.Module):
             torch.Tensor : The output tensor.
         """
         model_logger.debug("BertEmbedding: x shape: %s", x.size())
-        emb, _ = self.embedding(x)
+        out = self.embedding(x)
+        emb = out.last_hidden_state
         model_logger.debug("BertEmbedding: emb shape: %s", emb.size())
         return emb
