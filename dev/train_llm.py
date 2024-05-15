@@ -239,7 +239,7 @@ def main():
         print("\tCreating the full dataset...")
         train_dataset = FullDataset(articles=train_tokens)
         valid_dataset = FullDataset(articles=valid_tokens)
-        args.context_size = train_tokens[1] - 1
+        args.context_size = train_tokens.shape[1] - 1
 
     # creating the dataloader
     print("Creating the dataloader...")
