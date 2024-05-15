@@ -7,6 +7,7 @@ For more information use --help command.
 """
 import argparse
 import csv
+import re
 
 import numpy as np
 import tqdm
@@ -71,7 +72,7 @@ def main():
 
             # Removing double break lines
             if args.no_double_bl:
-                text = text.replace("\n\n", "\n")
+                text = re.sub(pattern="\n\n+", repl="\n", string=text)
 
             # Convert text to lower case
             if args.lower:
