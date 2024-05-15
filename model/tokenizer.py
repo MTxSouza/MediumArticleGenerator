@@ -60,6 +60,15 @@ class Tokenizer:
         """
         return self.encode_vocab.get(self.PAD)
 
+    def get_vocab(self):
+        """
+        Get the vocabulary of Tokenizer.
+
+        Returns:
+            Dict[str, int] : The vocabulary dictionary.
+        """
+        return self.encode_vocab
+
     def encode(self, text):
         """
         Tokenize the input text into a list of tokens.
@@ -88,6 +97,8 @@ class Tokenizer:
 
 class BertTokenizer:
 
+    SOT = "[CLS]"
+    EOA = "[SEP]"
     tokenizer = torch.hub.load("huggingface/pytorch-transformers", "tokenizer", "bert-base-cased")
 
     @classmethod
@@ -128,6 +139,15 @@ class BertTokenizer:
         """
         return self.tokenizer.pad_token_id
 
+    def get_vocab(self):
+        """
+        Get the vocabulary of Tokenizer.
+
+        Returns:
+            Dict[str, int] : The vocabulary dictionary.
+        """
+        return self.tokenizer.get_vocab()
+
     def encode(self, text):
         """
         Tokenize the input text into a list of tokens.
@@ -138,7 +158,7 @@ class BertTokenizer:
         Returns:
             List[int] : The list of token indices.
         """
-        return self.tokenizer.encode(text=text, add_special_tokens=True)
+        return self.tokenizer.encode(text=text, add_special_tokens=False)
 
     def decode(self, indices):
         """
@@ -146,7 +166,7 @@ class BertTokenizer:
 
         Args:
             indices (List[int]) : The list of indices.
-        
+
         Returns:
             str : The output text.
         """
