@@ -267,7 +267,7 @@ def main():
         context=args.context_size,
         dropout_rate=args.dropout,
         tokenizer=tokenizer,
-        emb_name=args.tokenizer,
+        emb_name=args.tokenizer_model,
         device=device
     )
     model = nn.DataParallel(module=model) # multiple GPUs
