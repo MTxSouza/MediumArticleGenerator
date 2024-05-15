@@ -206,7 +206,6 @@ def main():
     print("=" * 100)
     print("Loading the tokenized text...")
     tokens = load_numpy_file(filepath="./source/tokens.npz")
-    context_size = tokens.shape[1]
 
     # loading the vocabulary
     print("Loading the vocabulary...")
@@ -259,7 +258,7 @@ def main():
         n_layers=args.n_layers,
         head_dim=args.d_model // args.n_heads,
         ff_dim=args.d_ff,
-        context=context_size,
+        context=args.context_size,
         dropout_rate=args.dropout,
         tokenizer=tokenizer,
         device=device
