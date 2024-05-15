@@ -271,6 +271,7 @@ def main():
         device=device
     )
     model = nn.DataParallel(module=model) # multiple GPUs
+    model.to(device=device)
 
     # initializing weights
     print("Initializing the model weights...")
@@ -283,7 +284,6 @@ def main():
         elif isinstance(module, nn.Embedding):
             nn.init.xavier_normal_(tensor=module.weight, generator=generator)
     model.apply(fn=init_weights)
-    model.to(device=device)
 
     # optimizer
     print("Creating the optimizer...")
