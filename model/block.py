@@ -5,49 +5,6 @@ import torch.nn.functional as F
 from model.logger import model_logger
 
 
-class PositionalEncoding(nn.Module):
-
-    def __init__(self, context, emb_dim):
-        """
-        Positional encoding for transformer. Adds positional information to the input tensor.
-
-        Args:
-            context (int) : The maximum length of the sequence.
-            emb_dim (int) : The dimension of the embedding.
-        """
-        super().__init__()
-
-        even_i = torch.arange(start=0, end=emb_dim, step=2).float()
-        odd_i = torch.arange(start=1, end=emb_dim, step=2).float() - 1
-
-        even_denom = torch.pow(10_000, exponent=even_i / emb_dim)
-        odd_denom = torch.pow(10_000, exponent=odd_i / emb_dim)
-
-        pos = torch.arange(end=context).float().reshape(shape=[context, 1])
-
-        even = torch.sin(pos / even_denom)
-        odd = torch.cos(pos / odd_denom)
-
-        self.register_buffer(name="pe", tensor=torch.cat(tensors=[even, odd], dim=1).expand(1, -1, -1))
-
-    def forward(self, x):
-        """
-        Forward pass of the positional encoding.
-
-        Args:
-            x (torch.Tensor) : The input tensor.
-
-        Returns:
-            torch.Tensor : The output tensor.
-        """
-        model_logger.debug("Positional encoding: x shape: %s", x.size())
-        model_logger.debug("Positional encoding: pe shape: %s", self.pe.size())
-        B, T, D = x.size()
-        x_pe = x + self.pe[:,:T,:]
-        model_logger.debug("Positional encoding: x_pe shape: %s", x_pe.size())
-        return x_pe
-
-
 class FeedForward(nn.Module):
 
     def __init__(self, emb_dim, ff_dim, dropout_rate = 0.2):
