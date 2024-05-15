@@ -117,7 +117,11 @@ class BertEmbedding(nn.Module):
             torch.Tensor : The output tensor.
         """
         model_logger.debug("BertEmbedding: x shape: %s", x.size())
-        out = self.embedding(x)
+
+        # Get mask for the input tensor
+        mask = (x != 0).float() # 0 is the padding token
+
+        out = self.embedding(x, mask)
         emb = out.last_hidden_state
         model_logger.debug("BertEmbedding: emb shape: %s", emb.size())
         return emb
