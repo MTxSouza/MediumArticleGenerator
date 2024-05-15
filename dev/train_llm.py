@@ -14,9 +14,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import tqdm
-import wandb
 from torch.utils.data import DataLoader
 
+import wandb
 from dev.utils.data import ChunkDataset, FullDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
@@ -239,6 +239,7 @@ def main():
         print("\tCreating the full dataset...")
         train_dataset = FullDataset(articles=train_tokens)
         valid_dataset = FullDataset(articles=valid_tokens)
+        args.context_size = train_tokens[1] - 1
 
     # creating the dataloader
     print("Creating the dataloader...")
