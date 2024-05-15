@@ -92,7 +92,10 @@ class BertEmbedding(nn.Module):
         """
         super().__init__()
         self.embedding = torch.hub.load("huggingface/pytorch-transformers", "model", "bert-base-cased")
-    
+        # Freeze the parameters
+        for param in self.embedding.parameters():
+            param.requires_grad = False
+
     @property
     def embedding_dim(self):
         """
