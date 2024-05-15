@@ -94,6 +94,19 @@ class Tokenizer:
         """
         return "".join([self.decode_vocab.get(idx, self.UNK) for idx in indices])
 
+    def tokenize(self, text):
+        """
+        Tokenize the input text into a list of tokens and add special tokens.
+
+        Args:
+            text (str) : The input text.
+        
+        Returns:
+            List[str] : The list of tokens.
+        """
+        tagged_text = self.SOT + text + self.EOT + self.SOA
+        return self.encode(text=tagged_text)
+
 
 class BertTokenizer:
 
@@ -171,3 +184,16 @@ class BertTokenizer:
             str : The output text.
         """
         return self.tokenizer.decode(token_ids=indices, skip_special_tokens=False)
+
+    def tokenize(self, text):
+        """
+        Tokenize the input text into a list of tokens and add special tokens.
+
+        Args:
+            text (str) : The input text.
+
+        Returns:
+            List[str] : The list of tokens.
+        """
+        tagged_text = self.SOT + text + "~"
+        return self.encode(text=tagged_text)
