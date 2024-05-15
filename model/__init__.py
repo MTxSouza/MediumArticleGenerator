@@ -4,13 +4,50 @@ This module provides the entire implementation of Medium Article Generator model
 import torch
 import torch.nn as nn
 
-from model.block import Decoder, DecoderLayer, PositionalEncoding
-from model.tokenizer import Tokenizer
+from model.block import Decoder, DecoderLayer
+from model.embedding import BertEmbedding, Embedding, PositionalEncoding
+
+
+class ArticleGeneratorEmbedding(nn.Module):
+
+    def __init__(self, context_size, emb_name = None, **kwargs):
+        """
+        Embedding layer for the transformer model.
+
+        Args:
+            context_size (int) : The maximum length of the sequence.
+            emb_name (str) : The name of the embedding. (default: None)
+        """
+        super().__init__()
+        if emb_name == "bert":
+            self.embedding = BertEmbedding()
+            emb_dim = self.embedding.embedding_dim
+        else:
+            vocab_size = kwargs.get("vocab_size")
+            emb_dim = kwargs.get("emb_dim")
+            self.embedding = Embedding(vocab_size=vocab_size, emb_dim=emb_dim)
+
+        # Positional encoding
+        self.pe = PositionalEncoding(context=context_size, emb_dim=emb_dim)
+
+    def forward(self, x):
+        """
+        Forward pass of the embedding layer.
+
+        Args:
+            x (torch.Tensor) : The input tensor.
+
+        Returns:
+            torch.Tensor : The output tensor.
+        """
+        x = self.embedding(x)
+        x = self.pe(x)
+        return x
 
 
 class ArticleGenerator(nn.Module):
 
-    def __init__(self, n_layers, vocab_size, emb_dim, head_dim, context, ff_dim, dropout_rate, device, tokenizer):
+    def __init__(self, n_layers, vocab_size, emb_dim, head_dim, context, ff_dim, dropout_rate, device, tokenizer, emb_name):
         """
         Article Generator model based on Transformer.
         Args:
@@ -22,12 +59,12 @@ class ArticleGenerator(nn.Module):
             ff_dim (int) : The dimension of the feed forward layer.
             dropout_rate (float) : The dropout rate.
             device (str) : The device to run the model.
-            tokenizer (Tokenizer) : The tokenizer object.
+            tokenizer (Tokenizer | BertTokenizer) : The tokenizer object.
+            emb_name (str) : The name of the embedding.
         """
         super().__init__()
         self.ctx = context
-        self.emb = nn.Embedding(num_embeddings=vocab_size, embedding_dim=emb_dim)
-        self.pe = PositionalEncoding(context=context, emb_dim=emb_dim)
+        self.emb = ArticleGeneratorEmbedding(context_size=context, emb_name=emb_name, vocab_size=vocab_size, emb_dim=emb_dim)
         self.layers = Decoder(
             n_layers=n_layers,
             decoder=DecoderLayer(
@@ -53,7 +90,6 @@ class ArticleGenerator(nn.Module):
             torch.Tensor : The output tensor.
         """
         x = self.emb(x)
-        x = self.pe(x)
         x = self.layers(x)
         x = self.norm(x)
         x = self.out(x)
@@ -86,13 +122,10 @@ class ArticleGenerator(nn.Module):
             Generator[str, None, None] : The generated text.
         """
         # Adding initial tags to the input text
-        tagged_text = Tokenizer.SOT + \
-                    text + \
-                    Tokenizer.EOT + \
-                    Tokenizer.SOA
+        tagged_text = self.tokenizer.tokenize(text=text)
 
         # Stop token
-        end_of_article = self.tokenizer.encode_vocab.get("<|eoa|>")
+        end_of_article = self.tokenizer.encode(text=self.tokenizer.EOA)[0]
 
         x = torch.tensor(
             data=self.tokenizer.encode(text=tagged_text),
