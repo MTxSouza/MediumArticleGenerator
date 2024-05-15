@@ -6,7 +6,7 @@ import os
 
 from dev.utils.data import ChunkDataset, FullDataset
 from dev.utils.file import load_json_file, load_numpy_file
-from model.tokenizer import Tokenizer
+from model.tokenizer import BertTokenizer, Tokenizer
 
 
 def _arguments():
@@ -15,6 +15,7 @@ def _arguments():
     """
     parser = argparse.ArgumentParser(description="Test the data loader for the model.")
     parser.add_argument("--context-size", type=int, default=0, help="Context size for the chunk dataset.")
+    parser.add_argument("--tokenizer", type=str, default=None, help="Tokenizer name to use.")
     return parser.parse_args()
 
 
@@ -37,8 +38,11 @@ def main():
     print("Tokens shape: ", tokens.shape)
 
     # Load Tokenizer
-    vocab = load_json_file('./source/vocab.json')
-    tokenizer = Tokenizer(vocab=vocab)
+    if args.tokenizer == "bert":
+        tokenizer = BertTokenizer()
+    else:
+        vocab = load_json_file('./source/vocab.json')
+        tokenizer = Tokenizer(vocab=vocab)
     print("Vocabulary size: ", len(tokenizer))
 
     # Create the dataset
