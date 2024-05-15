@@ -25,7 +25,10 @@ class ArticleGeneratorEmbedding(nn.Module):
         else:
             vocab_size = kwargs.get("vocab_size")
             emb_dim = kwargs.get("emb_dim")
-            self.embedding = Embedding(vocab_size=vocab_size, emb_dim=emb_dim)
+            self.embedding = nn.Sequential(
+                Embedding(vocab_size=vocab_size, emb_dim=emb_dim),
+                PositionalEncoding(context=context_size, emb_dim=emb_dim)
+            )
 
         # Positional encoding
         self.pe = PositionalEncoding(context=context_size, emb_dim=emb_dim)
@@ -41,7 +44,6 @@ class ArticleGeneratorEmbedding(nn.Module):
             torch.Tensor : The output tensor.
         """
         x = self.embedding(x)
-        x = self.pe(x)
         return x
 
 

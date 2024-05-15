@@ -91,7 +91,11 @@ class BertEmbedding(nn.Module):
         Bert embedding layer for the transformer model.
         """
         super().__init__()
-        self.embedding = torch.hub.load("huggingface/pytorch-transformers", "model", "bert-base-cased")
+        model = torch.hub.load("huggingface/pytorch-transformers", "model", "bert-base-cased")
+
+        # Get embeddings from the model
+        self.embedding = model.embeddings
+
         # Freeze the parameters
         for param in self.embedding.parameters():
             param.requires_grad = False
