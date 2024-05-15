@@ -1,5 +1,7 @@
 import re
 
+import torch
+
 
 class Tokenizer:
 
@@ -82,3 +84,70 @@ class Tokenizer:
             str : The output text.
         """
         return "".join([self.decode_vocab.get(idx, self.UNK) for idx in indices])
+
+
+class BertTokenizer:
+
+    tokenizer = torch.hub.load("huggingface/pytorch-transformers", "tokenizer", "bert-base-cased")
+
+    @classmethod
+    def get_str_tokens(cls, text):
+        """
+        Tokenize the input text into a list of tokens.
+
+        Args:
+            text (str) : The input text.
+        
+        Returns:
+            List[str] : The list of tokens.
+        """
+        return cls.tokenizer.tokenize(text)
+
+    def __init__(self):
+        """
+        Bert tokenizer class for converting text to numbers and vice versa.
+        """
+        self.tokenizer = self.tokenizer
+
+    def __len__(self):
+        """
+        Return the size of vocabulary.
+
+        Returns:
+            int : The size of vocabulary.
+        """
+        return self.tokenizer.vocab_size
+
+    @property
+    def pad_index(self):
+        """
+        Get the index of padding token.
+
+        Returns:
+            int : The index of padding token.
+        """
+        return self.tokenizer.pad_token_id
+
+    def encode(self, text):
+        """
+        Tokenize the input text into a list of tokens.
+
+        Args:
+            text (str) : The input text.
+        
+        Returns:
+            List[int] : The list of token indices.
+        """
+        return self.tokenizer.encode(text=text, add_special_tokens=True)
+
+    def decode(self, indices):
+        """
+        Decode the list of indices into a text.
+
+        Args:
+            indices (List[int]) : The list of indices.
+        
+        Returns:
+            str : The output text.
+        """
+        return self.tokenizer.decode(ids=indices, skip_special_tokens=False)
