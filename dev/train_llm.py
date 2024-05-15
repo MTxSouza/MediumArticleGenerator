@@ -7,6 +7,7 @@ All training status will be saved in Weight & Biases platform and it requires an
 For more information use --help command.
 """
 import argparse
+import os
 
 import numpy as np
 import torch
@@ -107,7 +108,8 @@ def train(model, train_loader, valid_loader, optimizer, tokenizer, device, **par
     # wandb init
     print("=" * 100)
     run = wandb.init(project="Medium Article Generator", config=params)
-    run.log_artifact("./source/vocab.json")
+    if os.path.exists("./source/vocab.json"):
+        run.log_artifact("./source/vocab.json")
 
     # training loop
     print("=" * 100)
