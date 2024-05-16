@@ -62,7 +62,7 @@ except Exception as error:
 logger.debug(msg="Params have been loaded successfully.")
 
 try:
-    model = ArticleGenerator(**params, vocab_size=len(tokenizer), device=device, tokenizer=tokenizer)
+    model = ArticleGenerator(**params, vocab_size=len(tokenizer), device=device, tokenizer=tokenizer, emb_name="bert")
     model.to(device=device)
 except Exception as error:
     print(INTERNAL_ERROR_MSG)
