@@ -9,7 +9,7 @@ import torch
 
 from app.logger import INTERNAL_ERROR_MSG, logger
 from model import ArticleGenerator
-from model.tokenizer import Tokenizer
+from model.tokenizer import BertTokenizer
 
 logger.info(msg="Initializing API.")
 
@@ -28,12 +28,10 @@ if not os.path.exists(path=source_folder_path):
 
 weights_filepath = os.path.join(source_folder_path, "weights.pt")
 logger.debug(msg=f"Absolute path of weights file : {weights_filepath}.")
-vocab_filepath = os.path.join(source_folder_path, "vocab.json")
-logger.debug(msg=f"Absolute path of params file : {vocab_filepath}.")
 params_filepath = os.path.join(source_folder_path, "params.json")
 logger.debug(msg=f"Absolute path of params file : {params_filepath}.")
 
-for filepath in (weights_filepath, vocab_filepath, params_filepath):
+for filepath in (weights_filepath, params_filepath):
     if not os.path.exists(path=filepath):
         filename = filepath.split(sep=os.sep)[-1]
         logger.error(msg=f"API could not find the `{filename}` file in `source` directory.")
@@ -46,16 +44,7 @@ if device.type == "cpu":
 
 # ===================== Tokenizer =====================
 try:
-    with open(file=vocab_filepath, mode="r", encoding="utf-8") as json_buffer:
-        vocab = json.load(fp=json_buffer)
-except Exception as error:
-    print(INTERNAL_ERROR_MSG)
-    logger.critical(msg=str(error))
-    sys.exit()
-logger.debug(msg=f"Vocab has been loaded successfully. Vocab size : {len(vocab)}.")
-
-try:
-    tokenizer = Tokenizer(vocab=vocab)
+    tokenizer = BertTokenizer()
 except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
