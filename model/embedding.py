@@ -96,6 +96,9 @@ class BertEmbedding(nn.Module):
         # Get embeddings from the model
         self.embedding = model.embeddings
 
+        # Drop the last layer
+        self.embedding = nn.Sequential(*list(self.embedding.children())[:-1]) # Remove dropout layer
+
         # Freeze the parameters
         for param in self.embedding.parameters():
             param.requires_grad = False
