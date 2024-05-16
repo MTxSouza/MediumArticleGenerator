@@ -284,7 +284,7 @@ def main():
             nn.init.xavier_normal_(tensor=module.weight, generator=generator)
             if module.bias is not None:
                 nn.init.zeros_(tensor=module.bias)
-        elif isinstance(module, nn.Embedding):
+        elif isinstance(module, nn.Embedding) and module.weight.requires_grad:
             nn.init.xavier_normal_(tensor=module.weight, generator=generator)
     model.apply(fn=init_weights)
 
