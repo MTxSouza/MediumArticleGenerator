@@ -72,7 +72,7 @@ def main():
                 continue
 
             # Tokenize the text
-            sample = GPTTokenizer.SOT + title + "\n\n" + article + GPTTokenizer.EOA
+            sample = title + "\n\n" + article
             article_tokens = tokenizer.encode(text=sample)
 
             # Filter articles based on length

@@ -111,8 +111,6 @@ class Tokenizer:
 class GPTTokenizer:
 
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
-    SOT = tokenizer.bos_token
-    EOA = tokenizer.eos_token
 
     def __init__(self):
         """
@@ -182,5 +180,5 @@ class GPTTokenizer:
         Returns:
             List[str] : The list of tokens.
         """
-        tagged_text = self.SOT + text + "~"
+        tagged_text = text + "\n\n"
         return self.encode(text=tagged_text)
