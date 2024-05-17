@@ -36,7 +36,7 @@ async def model_details():
 async def generate(prompt: Prompt):
     """Run the model inference and return it's generated text."""
     try:
-        text, extra_tokens, max_length = check_prompt(prompt=prompt)
+        text, extra_tokens, max_length, temp = check_prompt(prompt=prompt)
     except ValueError as error:
         logger.error(error.args[0])
         raise HTTPException(
@@ -53,7 +53,8 @@ async def generate(prompt: Prompt):
         content=model.generate(
             text=text,
             extra_tokens=extra_tokens,
-            max_len=max_length
+            max_len=max_length,
+            temperature=temp
         ),
         status_code=status.HTTP_201_CREATED,
         media_type="text/plain"

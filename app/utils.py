@@ -17,6 +17,7 @@ def check_prompt(prompt: Prompt):
     text = prompt.text
     extra_tokens = prompt.extra_tokens
     max_len = prompt.max_length
+    temp = prompt.temp
 
     # Converting text to lowercase
     text = text.lower()
@@ -37,4 +38,7 @@ def check_prompt(prompt: Prompt):
         raise ValueError("The maximum length should be at least 80 tokens.")
     max_len = float("inf") if max_len is None else max_len
 
-    return _text, extra_tokens, max_len
+    if temp < 0.0 or temp > 1.0:
+        raise ValueError("The temperature value should be between 0.0 and 1.0.")
+
+    return _text, extra_tokens, max_len, temp
