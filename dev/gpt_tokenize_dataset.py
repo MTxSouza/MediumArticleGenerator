@@ -73,6 +73,8 @@ def main():
 
             # Tokenize the text
             sample = title + "\n\n" + article
+            if not sample.endswith("."):
+                sample += "." # Add a period at the end of the article
             article_tokens = tokenizer.encode(text=sample)
 
             # Filter articles based on length
