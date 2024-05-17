@@ -1,6 +1,6 @@
 import re
 
-import torch
+from transformers import AutoTokenizer
 
 
 class Tokenizer:
@@ -108,25 +108,11 @@ class Tokenizer:
         return self.encode(text=tagged_text)
 
 
-class BertTokenizer:
+class GPTTokenizer:
 
-    SOT = "[CLS]"
-    EOA = "[SEP]"
-    tokenizer = torch.hub.load("huggingface/pytorch-transformers", "tokenizer", "bert-base-cased")
-
-    @classmethod
-    def get_str_tokens(cls, text):
-        """
-        Tokenize the input text into a list of tokens.
-
-        Args:
-            text (str) : The input text.
-        
-        Returns:
-            List[str] : The list of tokens.
-        """
-        ids = cls.tokenizer.encode(text, add_special_tokens=False)
-        return cls.tokenizer.decode(ids).split()
+    tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    SOT = tokenizer.bos_token
+    EOA = tokenizer.eos_token
 
     def __init__(self):
         """
@@ -151,7 +137,7 @@ class BertTokenizer:
         Returns:
             int : The index of padding token.
         """
-        return self.tokenizer.pad_token_id
+        return self.tokenizer.bos_token
 
     def get_vocab(self):
         """
