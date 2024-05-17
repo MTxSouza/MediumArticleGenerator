@@ -16,6 +16,7 @@ def _arguments():
     parser.add_argument("--file", type=str, required=True, help="Path to the input CSV file.")
     parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
     parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
+    parser.add_argument("--lower", action="store_true", help="Convert text to lowercase.")
     parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
     return parser.parse_args()
 
@@ -75,6 +76,11 @@ def main():
             sample = title + "\n\n" + article
             if not sample.endswith("."):
                 sample += "." # Add a period at the end of the article
+
+            # Convert text to lowercase
+            if args.lower:
+                sample = sample.lower()
+
             article_tokens = tokenizer.encode(text=sample)
 
             # Filter articles based on length
