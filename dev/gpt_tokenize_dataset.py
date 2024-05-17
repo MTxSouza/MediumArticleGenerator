@@ -1,10 +1,3 @@
-"""
-Load the text dataset and tokenize it for training the model. It expects a CSV file with the a column
-called `text` with the text data. It will tokenize the text and save it as compressed numpy file.
-It uses the `tiktoken` library by OpenAI and you can choose the tokenizer model to use.
-
-For more information use --help command.
-"""
 import argparse
 import csv
 import re
@@ -14,19 +7,15 @@ import tqdm
 
 from dev.utils.data import remove_links, remove_non_utf_8
 from dev.utils.file import create_directory, save_numpy_file
-from model.tokenizer import BertTokenizer
+from model.tokenizer import GPTTokenizer
 
 
 def _arguments():
     """Parse the arguments from command line."""
     parser = argparse.ArgumentParser(description="Tokenize the text dataset for training the model.")
     parser.add_argument("--file", type=str, required=True, help="Path to the input CSV file.")
-    parser.add_argument("--only-utf-8", action="store_true", help="Only consider the UTF-8 characters.")
-    parser.add_argument("--ignore-char", nargs="+", type=str, default="", help="Ignore a specific character.")
-    parser.add_argument("--lower", action="store_true", help="Convert text to lower case.")
     parser.add_argument("--drop-long", type=int, default=600, help="Drop articles with more than N tokens.")
     parser.add_argument("--drop-short", type=int, default=100, help="Drop articles with less than N tokens.")
-    parser.add_argument("--no-double-bl", action="store_true", help="Remove double break lines.")
     parser.add_argument("--header", action="store_true", help="If the CSV file has a header row.")
     return parser.parse_args()
 
@@ -36,7 +25,7 @@ def main():
     args = _arguments()
 
     # Loading Bert Tokenizer
-    tokenizer = BertTokenizer()
+    tokenizer = GPTTokenizer()
 
     # Define empty variables to store tokens and metadata
     samples = []
@@ -65,22 +54,11 @@ def main():
 
             # Preprocess text (remove links, non-UTF-8 chars)
             text = title + "<<|custom-separator|>>" + article
-            if args.only_utf_8:
-                text = remove_non_utf_8(text=text)
+            text = remove_non_utf_8(text=text)
             text = remove_links(text=text)
 
             # Removing double break lines
-            if args.no_double_bl:
-                text = re.sub(pattern="\n\n+", repl="\n", string=text)
-
-            # Convert text to lower case
-            if args.lower:
-                text = text.lower()
-
-            # Ignore a specific character
-            for char in args.ignore_char:
-                if char in text:
-                    continue
+            text = re.sub(pattern="\n\n+", repl="\n", string=text)
 
             # Skip empty articles
             try:
@@ -94,8 +72,8 @@ def main():
                 continue
 
             # Tokenize the text
-            sample = BertTokenizer.SOT + title + "\n\n" + article + BertTokenizer.EOA
-            article_tokens = BertTokenizer.get_str_tokens(text=sample)
+            sample = GPTTokenizer.SOT + title + "\n\n" + article + GPTTokenizer.EOA
+            article_tokens = tokenizer.encode(text=sample)
 
             # Filter articles based on length
             article_length = len(article_tokens)

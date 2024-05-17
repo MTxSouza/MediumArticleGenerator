@@ -125,7 +125,8 @@ class BertTokenizer:
         Returns:
             List[str] : The list of tokens.
         """
-        return cls.tokenizer.tokenize(text)
+        ids = cls.tokenizer.encode(text, add_special_tokens=False)
+        return cls.tokenizer.decode(ids).split()
 
     def __init__(self):
         """
