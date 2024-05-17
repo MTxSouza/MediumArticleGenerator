@@ -114,5 +114,5 @@ class GPTEmbedding(nn.Module):
             """
             i = x.size(1)
             emb = self.embedding(x)
-            pe = self.pe(torch.arange(i).unsqueeze(0).repeat(x.size(0), 1).to(x.device))
+            pe = self.pe(torch.arange(i).unsqueeze(0).to(x.device))
             return emb + pe
