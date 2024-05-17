@@ -58,20 +58,30 @@ class ArticleGenerator(nn.Module):
         return x
 
     @torch.no_grad()
-    def predict_next_token(self, x):
+    def predict_next_token(self, x, temp):
         """
         Predict the next token given the input tensor.
         Args:
             x (torch.Tensor) : The input tensor.
-        Output:
+            temp (float) : The temperature value for sampling.
+
+        Returns:
             torch.Tensor : The predicted token.
         """
         self.eval()
         x = self(x)
-        token = x.argmax(dim=-1)[:,-1]
+
+        # Applying temperature to the logits
+        if temp > 0.0:
+            x = x / temp
+            x = torch.softmax(x, dim=-1)
+            token = torch.multinomial(input=x.squeeze(dim=0), num_samples=1)
+            token = token[-1]
+        else:
+            token = x.argmax(dim=-1)[:,-1]
         return token
 
-    def generate(self, text, extra_tokens = 50, max_len = None):
+    def generate(self, text, extra_tokens = 50, max_len = None, temperature = 1.0):
         """
         Generate text based on the input text.
 
@@ -79,6 +89,7 @@ class ArticleGenerator(nn.Module):
             text (str) : The input text.
             extra_tokens (int) : The number of extra tokens to generate when exceeding the context size. (default: 50)
             max_len (int) : The maximum number of the tokens to be generated. (default: None)
+            temperature (float) : The temperature value for sampling. (default: 1.0)
 
         Returns:
             Generator[str, None, None] : The generated text.
@@ -98,7 +109,7 @@ class ArticleGenerator(nn.Module):
         while n_tokens < max_len and n_tokens < self.ctx + extra_tokens:
             if x.size(dim=1) > self.ctx:
                 x = x[:,1:] # ignoring first token of window context
-            token = self.predict_next_token(x)
+            token = self.predict_next_token(x=x, temp=temperature)
             if token.item() == end_of_article: # end of sentence
                 break
             yield self.tokenizer.decode(indices=[token.item()])
