@@ -137,7 +137,7 @@ class GPTTokenizer:
         Returns:
             int : The index of padding token.
         """
-        return self.tokenizer.bos_token
+        return self.tokenizer.bos_token_id
 
     def get_vocab(self):
         """
