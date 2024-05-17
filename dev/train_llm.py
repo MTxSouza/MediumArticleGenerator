@@ -20,7 +20,7 @@ import wandb
 from dev.utils.data import ChunkDataset, FullDataset, get_device, split_data
 from dev.utils.file import load_json_file, load_numpy_file
 from model import ArticleGenerator
-from model.tokenizer import BertTokenizer, Tokenizer
+from model.tokenizer import GPTTokenizer
 
 
 def _arguments():
@@ -38,7 +38,6 @@ def _arguments():
     parser.add_argument("--lr", type=float, default=2e-4, help="Learning rate for training.")
     parser.add_argument("--early-stop", type=int, default=10, help="Number of epochs to wait for early stopping.")
     parser.add_argument("--weight-decay", type=float, default=0.0, help="Weight decay for training.")
-    parser.add_argument("--tokenizer-model", type=str, default=None, help="Tokenizer for the model.")
     parser.add_argument("--seed", type=int, default=42, help="Seed for reproducibility.")
     return parser.parse_args()
 
@@ -210,18 +209,9 @@ def main():
     print("Loading the tokenized text...")
     tokens = load_numpy_file(filepath="./source/tokens.npz")
 
-    # loading the vocabulary
-    if args.tokenizer_model == "bert":
-        # loading Bert Tokenizer
-        print("Loading the Bert Tokenizer...")
-        tokenizer = BertTokenizer()
-    else:
-        print("Loading the vocabulary...")
-        vocab = load_json_file(filepath="./source/vocab.json")
-
-        # loading Tokenizer
-        print("Loading the Tokenizer...")
-        tokenizer = Tokenizer(vocab=vocab)
+    # loading Bert Tokenizer
+    print("Loading the Bert Tokenizer...")
+    tokenizer = GPTTokenizer()
 
     # preparing dataset
     print("-" * 100)
@@ -270,7 +260,6 @@ def main():
         context=args.context_size,
         dropout_rate=args.dropout,
         tokenizer=tokenizer,
-        emb_name=args.tokenizer_model,
         device=device
     )
     model = nn.DataParallel(module=model) # multiple GPUs

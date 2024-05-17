@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from transformers import AutoModel
 
 from model.logger import model_logger
 
@@ -84,43 +85,34 @@ class Embedding(nn.Module):
         return self.embedding(x)
 
 
-class BertEmbedding(nn.Module):
+class GPTEmbedding(nn.Module):
 
-    def __init__(self):
-        """
-        Bert embedding layer for the transformer model.
-        """
-        super().__init__()
-        model = torch.hub.load("huggingface/pytorch-transformers", "model", "bert-base-cased")
+        def __init__(self):
+            """
+            Embedding layer for the GPT model.
+            """
+            super().__init__()
+            model = AutoModel.from_pretrained("gpt2")
+            self.embedding = model.wte
+            self.pe = model.wpe
 
-        # Get embeddings from the model
-        self.embedding = model.embeddings
+            # Freeze the parameters
+            for param in self.embedding.parameters():
+                param.requires_grad = False
+            for param in self.pe.parameters():
+                param.requires_grad = False
 
-        # Freeze the parameters
-        for param in self.embedding.parameters():
-            param.requires_grad = False
-
-    @property
-    def embedding_dim(self):
-        """
-        Get the embedding dimension.
-
-        Returns:
-            int : The embedding dimension.
-        """
-        return 768
-
-    def forward(self, x):
-        """
-        Forward pass of the Bert embedding layer.
-
-        Args:
-            x (torch.Tensor) : The input tensor.
-
-        Returns:
-            torch.Tensor : The output tensor.
-        """
-        model_logger.debug("BertEmbedding: x shape: %s", x.size())
-        emb = self.embedding(x)
-        model_logger.debug("BertEmbedding: emb shape: %s", emb.size())
-        return emb
+        def __call__(self, x):
+            """
+            Forward pass of the embedding layer.
+    
+            Args:
+                x (torch.Tensor) : The input tensor.
+    
+            Returns:
+                torch.Tensor : The output tensor.
+            """
+            i = x.size(1)
+            emb = self.embedding(x)
+            pe = self.pe(torch.arange(i).unsqueeze(0).repeat(x.size(0), 1).to(x.device))
+            return emb + pe
