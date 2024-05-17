@@ -37,6 +37,7 @@ async function request_article() {
     var title = document.getElementById("title").value;
     var extra_tokens = document.getElementById("extra-tokens").value;
     var max_length = document.getElementById("max-tokens").value;
+    var temp = document.getElementById("temp-tokens").value;
 
     // Disable the button and input field
     button = document.getElementById("generate");
@@ -54,7 +55,8 @@ async function request_article() {
             body: JSON.stringify({
                 text : title,
                 extra_tokens : extra_tokens,
-                max_length : max_length
+                max_length : max_length,
+                temp : temp
             }),
         });
 
