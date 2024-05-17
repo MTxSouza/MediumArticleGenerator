@@ -9,7 +9,7 @@ import torch
 
 from app.logger import INTERNAL_ERROR_MSG, logger
 from model import ArticleGenerator
-from model.tokenizer import BertTokenizer
+from model.tokenizer import GPTTokenizer
 
 logger.info(msg="Initializing API.")
 
@@ -44,7 +44,7 @@ if device.type == "cpu":
 
 # ===================== Tokenizer =====================
 try:
-    tokenizer = BertTokenizer()
+    tokenizer = GPTTokenizer()
 except Exception as error:
     print(INTERNAL_ERROR_MSG)
     logger.critical(msg=str(error))
@@ -62,7 +62,7 @@ except Exception as error:
 logger.debug(msg="Params have been loaded successfully.")
 
 try:
-    model = ArticleGenerator(**params, vocab_size=len(tokenizer), device=device, tokenizer=tokenizer, emb_name="bert")
+    model = ArticleGenerator(**params, vocab_size=len(tokenizer), device=device, tokenizer=tokenizer)
     model.to(device=device)
 except Exception as error:
     print(INTERNAL_ERROR_MSG)

@@ -111,6 +111,7 @@ class Tokenizer:
 class GPTTokenizer:
 
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    EOA = tokenizer.eos_token
 
     def __init__(self):
         """

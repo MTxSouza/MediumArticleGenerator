@@ -102,11 +102,6 @@ class ArticleGenerator(nn.Module):
             token = self.predict_next_token(x)
             if token.item() == end_of_article: # end of sentence
                 break
-            out = self.tokenizer.decode(indices=[token.item()]).replace("##", "")
-            if not out.endswith(" "):
-                out += " "
-            output.append(out)
-            print(output)
-            yield out
+            yield self.tokenizer.decode(indices=[token.item()])
             x = torch.cat(tensors=[x, token.unsqueeze(dim=0)], dim=1)
             n_tokens += 1
