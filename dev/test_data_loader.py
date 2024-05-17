@@ -5,8 +5,8 @@ import argparse
 import os
 
 from dev.utils.data import ChunkDataset, FullDataset
-from dev.utils.file import load_json_file, load_numpy_file
-from model.tokenizer import BertTokenizer, Tokenizer
+from dev.utils.file import load_numpy_file
+from model.tokenizer import GPTTokenizer
 
 
 def _arguments():
@@ -38,11 +38,7 @@ def main():
     print("Tokens shape: ", tokens.shape)
 
     # Load Tokenizer
-    if args.tokenizer == "bert":
-        tokenizer = BertTokenizer()
-    else:
-        vocab = load_json_file('./source/vocab.json')
-        tokenizer = Tokenizer(vocab=vocab)
+    tokenizer = GPTTokenizer()
     print("Vocabulary size: ", len(tokenizer))
 
     # Create the dataset
