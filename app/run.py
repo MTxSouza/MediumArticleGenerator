@@ -1,19 +1,25 @@
 """
 Main module that runs the API of Medium Article Generator model.
 """
-import os
-import sys
-
-abs_path = os.path.abspath(path=os.path.dirname(p=__file__))
-abs_path = os.path.join(os.sep, *abs_path)
-sys.path.append(abs_path)
-
 from fastapi import FastAPI, status
+from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-from app.config import model, params
+from app.config import logger, model, params
+from app.schema import Prompt
+from app.utils import check_prompt
 
 app = FastAPI()
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 @app.get(path="/", status_code=status.HTTP_308_PERMANENT_REDIRECT)
@@ -26,7 +32,30 @@ async def model_details():
     """Returns all hyper-parameters of model."""
     return params
 
-@app.get(path="/generate", status_code=status.HTTP_102_PROCESSING)
-async def generate(text: str = "<|sos|>", max_tokens: int = 100):
+@app.post(path="/generate", status_code=status.HTTP_102_PROCESSING)
+async def generate(prompt: Prompt):
     """Run the model inference and return it's generated text."""
-    return StreamingResponse(content=model.generate(text=text, max_len=max_tokens), status_code=status.HTTP_200_OK)
+    try:
+        text, extra_tokens, max_length, temp = check_prompt(prompt=prompt)
+    except ValueError as error:
+        logger.error(error.args[0])
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error.args[0]
+        )
+    except Exception as error:
+        logger.critical(error.args[0])
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error. Please try again later."
+        )
+    return StreamingResponse(
+        content=model.generate(
+            text=text,
+            extra_tokens=extra_tokens,
+            max_len=max_length,
+            temperature=temp
+        ),
+        status_code=status.HTTP_201_CREATED,
+        media_type="text/plain"
+    )

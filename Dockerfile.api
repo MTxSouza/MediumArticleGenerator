@@ -1,0 +1,16 @@
+# base image
+FROM --platform=amd64 ubuntu:22.04
+# install dependencies
+RUN apt-get update && apt-get install -y python3 python3-pip
+# working directory
+WORKDIR /home
+# copy requirements file
+COPY model/requirements.txt model_requirements.txt
+COPY app/requirements.txt api_requirements.txt
+# install requirements
+RUN pip install -r model_requirements.txt
+RUN pip install -r api_requirements.txt
+# copy project
+COPY . .
+# run server
+CMD ["uvicorn", "app.run:app", "--port", "8000", "--host", "0.0.0.0"]

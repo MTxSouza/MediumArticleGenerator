@@ -1,0 +1,8 @@
+*cache/
+*.md
+*.log
+env/
+.env/
+venv/
+.venv/
+*.csv

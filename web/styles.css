@@ -1,0 +1,175 @@
+.body {
+    background-color: rgb(240, 240, 240);
+}
+
+
+.frame {
+    margin: auto;
+    width: 960px;
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+
+.prompt {
+    padding-top: 50px;
+}
+
+
+.output {
+    margin-top: 50px;
+}
+.output p {
+    margin: auto;
+    width: 80%;
+    text-align: justify;
+    font-family: serif;
+    color: rgb(32, 32, 32);
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    padding: 30px;
+    white-space: pre-line;
+}
+
+
+.media {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding-right: 50px;
+    padding-bottom: 30px;
+    text-align: right;
+}
+
+
+.logo {
+    width: 100%;
+    padding-top: 50px;
+}
+
+
+.setting {
+    width: 35px;
+    height: 35px;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1.5px solid rgb(209, 209, 209);
+    transition: all 300ms;
+}
+.setting:hover {
+    border: 1.8px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px -3px rgb(124, 124, 124);
+    transition: all 300ms;
+}
+.setting:active {
+    transform: translateY(2px);
+}
+
+
+.setting svg {
+    fill: rgb(75, 75, 75);
+    transition: all 300ms;
+}
+.setting:hover svg {
+    fill: #000000;
+    transition: all 300ms;
+}
+
+
+.prompt-setting {
+    padding-top: 10px;
+}
+.prompt-setting div {
+    margin: auto;
+    display: flex;
+    width: 100%;
+    height: 80px;
+    background-color: transparent;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    transition: all 300ms;
+}
+.prompt-setting div input, .prompt-setting div label {
+    margin: auto;
+}
+
+
+.slider {
+    border-radius: 5px;
+    background: rgb(209, 209, 209);
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+.slider::-webkit-slider-runnable-track {
+    background: #000000;
+    height: 3px;
+}
+.slider::-webkit-slider-thumb {
+    background-color: #000000;
+    border: #000000;
+}
+.slider::-moz-range-track {
+    background: #000000;
+    height: 3px;
+}
+.slider::-moz-range-thumb {
+    background-color: #000000;
+    border: #000000;
+}
+
+
+.title {
+    width: 60%;
+    height: 35px;
+    padding-left: 20px;
+    border-radius: 12px;
+    border: 1.5px solid rgb(209, 209, 209);
+    outline: none;
+    box-shadow: 0px 0px 10px -18px;
+    font-family: serif;
+    font-size: 16px;
+    transition: all 100ms;
+}
+.title:hover {
+    border: 1.8px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px -3px rgb(124, 124, 124);
+    transition: all 100ms;
+}
+.title:focus {
+    border: 1.8px solid rgb(0, 0, 0);
+    border-radius: 20px;
+}
+
+
+.generate {
+    width: 10%;
+    height: 35px;
+    background-color: transparent;
+    color: rgb(75, 75, 75);
+    border: 1.5px solid rgb(209, 209, 209);
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: serif;
+    font-size: 16px;
+    text-align: center;
+    transition: all 300ms;
+}
+.generate:hover {
+    color: #fff;
+    background-color: #000000;
+    border: 1.5px solid rgb(0, 0, 0);
+    box-shadow: 0px 0px 15px -3px rgb(124, 124, 124);
+    border-radius: 20px;
+    transition: all 300ms;
+}
+.generate:active {
+    transform: translateY(2px);
+}
