@@ -33,6 +33,41 @@ function show_error_message(error, message) {
     console.error("Error fetching data:", error);
 }
 
+async function request_model_info() {
+
+    // Get the generation div element
+    const divContextSize = document.getElementById("max-tokens");
+    divContextSize.max = 100;
+
+    // Retrieve the model hyperparameters
+    try {
+        const response = await fetch("http://0.0.0.0:8000/about", {
+            method: "GET",
+            headers: {
+                "content-type": "application/json; charset=utf-8"
+            }
+        });
+
+        // Check if the request was successful
+        if (response.status != 200) {
+            const error = await response.json();
+            show_error_message(response.detail, error.detail);
+            return;
+        }
+
+        // Get the response from the server
+        const model_info = await response.json();
+        divContextSize.max = model_info.context;
+    } catch (error) {
+        if (error instanceof TypeError) {
+            show_error_message(error, "Could not connect to the server");
+        } else {
+            show_error_message(error, "Internal server error");
+        }
+        return;
+    }
+}
+
 async function request_article() {
     var title = document.getElementById("title").value;
     var extra_tokens = document.getElementById("extra-tokens").value;
@@ -102,3 +137,5 @@ async function request_article() {
         input.disabled = false;
     }
 }
+
+window.onload = request_model_info;

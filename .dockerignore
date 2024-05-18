@@ -1,8 +1,30 @@
-*cache/
+# Cache
+__pycache__/
+.mypy_cache/
+
+# Docs
+assets/
 *.md
+
+# Tracking
+wandb/
 *.log
+
+# Environment
 env/
 .env/
 venv/
 .venv/
+
+# Data
+source/
+*.png
 *.csv
+
+# Web
+*.html
+*.js
+*.css
+
+# Git
+.gitignore

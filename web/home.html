@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="./script.js"></script>
+</head>
 </html>
 <body>
     <div class="frame">
@@ -24,9 +25,9 @@
                     <label>Extra Tokens: <output id="showExtraTokens">50</output></label>
                     <input type="range" min="50" max="100" value="50" step="1" class="slider" id="extra-tokens" oninput="showExtraTokens.innerText = this.value">
                     <label>Max tokens: <output id="showMaxTokens">80</output></label>
-                    <input type="range" min="80" max="500" value="80" step="1" class="slider" id="max-tokens" oninput="showMaxTokens.innerText = this.value">
-                    <label>Temperature: <output id="tempTokens">0</output></label>
-                    <input type="range" min="0" max="1" value="0" step="0.01" class="slider" id="temp-tokens" oninput="tempTokens.innerText = this.value">
+                    <input type="range" min="80" max="100" value="80" step="1" class="slider" id="max-tokens" oninput="showMaxTokens.innerText = this.value">
+                    <label>Temperature: <output id="tempTokens">1</output></label>
+                    <input type="range" min="0" max="1" value="1" step="0.01" class="slider" id="temp-tokens" oninput="tempTokens.innerText = this.value">
                 </div>
             </div>
         </div>

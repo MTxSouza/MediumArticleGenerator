@@ -1,16 +1,21 @@
-# base image
-FROM --platform=amd64 ubuntu:22.04
-# install dependencies
-RUN apt-get update && apt-get install -y python3 python3-pip
-# working directory
+# Base image
+FROM --platform=amd64 python:3.10.14-slim-bullseye
+# Install dependencies
+RUN apt-get update && apt-get install -y wget
+# Working directory
 WORKDIR /home
-# copy requirements file
+# Copy requirements file
 COPY model/requirements.txt model_requirements.txt
 COPY app/requirements.txt api_requirements.txt
-# install requirements
-RUN pip install -r model_requirements.txt
-RUN pip install -r api_requirements.txt
-# copy project
+# Install requirements
+RUN pip install -r model_requirements.txt && pip install -r api_requirements.txt
+# Copy download script and download the model
+COPY download-model.sh .
+RUN chmod +x download-model.sh && ./download-model.sh
+# Copy model directory and run the model
+COPY model model
+RUN PYTHONPATH=. python3 model
+# Copy project
 COPY . .
-# run server
+# Run server
 CMD ["uvicorn", "app.run:app", "--port", "8000", "--host", "0.0.0.0"]
