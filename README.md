@@ -1,6 +1,8 @@
 <img src="assets/Medium_Article_Generator.png" height="170px">
 Simple LLM trained over a dataset of Medium articles. Given a title to the model, it generates text related to that topic.
 
+https://github.com/MTxSouza/MediumArticleGenerator/assets/67404745/b8cdfd30-edcd-4fad-a15f-413d07863701
+
 ## Installation
 You need to download the model weights and hyper-parameters from repo before initialze it.
 ```bash
