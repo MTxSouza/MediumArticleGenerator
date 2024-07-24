@@ -18,7 +18,7 @@ hdlr = logging.FileHandler(filename=os.path.join(logs_folder, "system.log"), mod
 hdlr.setFormatter(fmt=fmt)
 
 # logger
-logger = logging.getLogger(name="pose-detection-logger")
+logger = logging.getLogger(name="system")
 logger.addHandler(hdlr=hdlr)
 logger.setLevel(level=logging.DEBUG)
 
